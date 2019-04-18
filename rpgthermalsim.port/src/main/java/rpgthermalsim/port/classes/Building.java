@@ -9,7 +9,7 @@ public class Building {
 	public static int iteration = 0;
 	
 	protected Layout buildingLayout;
-	protected Layout refs;
+	protected Layout ref;
 	protected ArrayList<String> builds,puts,links;
 	protected String file;
 	
@@ -58,6 +58,54 @@ public class Building {
 	public Building() {}
 
 	public void loop() {
+		refresh(ref);
+		int h = 0;
+		while(h!=-1) {
+			h = command();
+			switch(h) {
+				case 0:
+					refresh(ref);
+					break;
+				case 1:
+					help();
+					break;
+				default:
+					System.err.printf("Error code: %d\n",h);
+					switch(h) {
+						case 2:
+							System.err.println("wrong input");
+							break;
+						case 3:
+							System.err.println("object already exist");
+							break;
+						case 4:
+							System.err.println("room does not exist");
+							break;
+						case 5:
+							System.err.println("file could not be opened");
+							break;
+						default:
+							System.err.println("UNEXPECTED ERROR CODE");
+							System.exit(-h);
+							break;
+					}
+			}
+			
+		}
+		
+	}
+
+	private int command() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	private void help() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void refresh(Layout ref2) {
 		// TODO Auto-generated method stub
 		
 	}
