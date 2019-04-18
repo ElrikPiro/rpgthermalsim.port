@@ -1,12 +1,14 @@
 package rpgthermalsim.port.classes;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
 import java.io.*;
 
 public class Building {
 	
 	final public static char CLEAR[] = {0x1b,'[','2','J','\0'};
-	public static int iteration = 0;
+	public int iteration = 0;
 	
 	protected Layout buildingLayout;
 	protected Layout ref;
@@ -106,7 +108,13 @@ public class Building {
 	}
 
 	private void refresh(Layout ref2) {
-		// TODO Auto-generated method stub
+		System.out.print(CLEAR);
+		System.out.println("Iteration: "+this.iteration);
+		Iterator<String> keys = ref2.keySet().iterator();
+		while(keys.hasNext()) {
+			String key = keys.next();
+			System.out.print("CODE: <" + key + ">" + System.lineSeparator() + ref2.get(key).toString());
+		}
 		
 	}
 
