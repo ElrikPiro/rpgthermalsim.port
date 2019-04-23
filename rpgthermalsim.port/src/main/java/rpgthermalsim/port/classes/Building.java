@@ -17,7 +17,7 @@ public class Building {
 	
 	public Building(String string) {
 		int iterations = 0;
-		String line, nil;
+		String line = null, nil;
 		boolean failed = false;
 		int ret;
 		
@@ -38,18 +38,323 @@ public class Building {
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(-1);
-		} catch (Exception e) {//TODO: change by specific exception of command
-			/*
-			    std::cout << "Failed to interpret line: \n" << iterations << ": " << line << std::endl;
-				std::getline(std::cin,nil);
-				failed = true;
-			 */
+		} catch (BuildingException e) {
+			e.printStackTrace();
+			System.err.printf("Failed to interpret line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
+			failed = true;
 		}
 		
 		return;
 	}
 
-	private void _command(String line) {
+	private void _command(String line) throws BuildingException{
+		String command;
+		String[] args;
+		args = line.split(" ");
+		command = args[0];
+		if(command.length()==0) {
+			iterate();
+			refresh(ref);
+			return;
+		}else if(command.charAt(0)=='#') return;
+		
+		switch(command) {
+			case "refresh":
+				ref.clear();
+				for(int i = 1;i<args.length;i++) {
+					if(!this.buildingLayout.containsKey(args[i])) throw new BuildingException(args[i]+" is not a valid key.");
+					ref.replace(args[i], this.buildingLayout.get(args[i]));
+				}
+				
+				if(ref.isEmpty()) ref = this.buildingLayout;
+				refresh(ref);
+				
+				return;
+			case "iterate":
+				if(args.length>1) {
+					iterate(Integer.parseInt(args[1]));
+				}else iterate();
+				refresh(ref);
+		}
+		/*
+		 * 
+		}else if(command=="iterate"){
+			bool a = (bool) std::getline(args,command,' ');
+			if(a&&std::atoi(command.c_str())>1) iterate(std::atoi(command.c_str()));
+			else iterate();
+			refresh(ref);
+			return 0;
+		}else if(command=="build"){//void newRoom(std::string ID,int w,int h,std::string desc)
+			std::string ID,desc;
+			int w,h;
+			if(std::getline(args,command,' ')){
+				ID = command;
+				if( this->buildingLayout.find(command) != this->buildingLayout.end() ) return 3;
+			}else return 1;
+
+			if(std::getline(args,command,' ')){
+				w = std::atoi(command.c_str());
+				if( w<1 ) return 2;
+			}else return 1;
+
+			if(std::getline(args,command,' ')){
+				h = std::atoi(command.c_str());
+				if( h<1 ) return 2;
+			}else return 1;
+
+			if(std::getline(args,desc)){
+
+			}else desc = "Room without description";
+
+			newRoom(ID,w,h,desc);
+			ref[ID] = this->buildingLayout[ID];
+			builds.push_back(input);
+			return 0;
+		}else if(command=="set"){
+			std::string ID;
+			int w,h;
+			int flame=0,ignition=0,temperature=0;
+
+			if(std::getline(args,command,' ')){
+				ID = command;
+				if( this->buildingLayout.find(command) == this->buildingLayout.end() ) return 4;
+			}else return 1;
+
+			if(std::getline(args,command,' ')){
+				w = std::atoi(command.c_str())-1;
+				if( w<0 ) return 2;
+			}else return 1;
+
+			if(std::getline(args,command,' ')){
+				h = std::atoi(command.c_str())-1;
+				if( h<0 ) return 2;
+			}else return 1;
+
+			if(std::getline(args,command,' ')){
+				flame = std::atoi(command.c_str());
+				if( flame<0 || flame>1 ) return 2;
+			}
+
+			if(std::getline(args,command,' ')){
+				ignition = std::atoi(command.c_str());
+				if( flame > 0 && ignition > 0 ) return 2;
+			}
+
+			if(std::getline(args,command,' ')){
+				temperature = std::atoi(command.c_str());
+				if( temperature < 0 ) return 2;
+			}
+
+			setCell(ID,w,h,flame,ignition,temperature);
+			return 0;
+		}else if(command=="exit") return -1;
+		else if(command=="link"){
+			std::string ID1,ID2;
+			int w1,h1,w2,h2;
+
+			if(std::getline(args,command,' ')){
+				ID1 = command;
+				if( this->buildingLayout.find(command) == this->buildingLayout.end() ) return 3;
+			}else return 1;
+
+			if(std::getline(args,command,' ')){
+				w1 = std::atoi(command.c_str())-1;
+				if( w1<0 ) return 2;
+			}else return 1;
+
+			if(std::getline(args,command,' ')){
+				h1 = std::atoi(command.c_str())-1;
+				if( h1<0 ) return 2;
+			}else return 1;
+
+			if(std::getline(args,command,' ')){
+				ID2 = command;
+				if( this->buildingLayout.find(command) == this->buildingLayout.end() ) return 3;
+			}else return 1;
+
+			if(std::getline(args,command,' ')){
+				w2 = std::atoi(command.c_str())-1;
+				if( w2<0 ) return 2;
+			}else return 1;
+
+			if(std::getline(args,command,' ')){
+				h2 = std::atoi(command.c_str())-1;
+				if( h2<0 ) return 2;
+			}else return 1;
+
+			linkCells(ID1,w1,h1,ID2,w2,h2);
+			links.push_back(input);
+			return 0;
+		}else if(command=="list"){
+			for(auto it = this->buildingLayout.begin();it!=this->buildingLayout.end();it++){
+				listRooms();
+				return -2;
+			}
+		}else if(command=="ignite"){
+			std::string ID1;
+			int x,y;
+
+			if(std::getline(args,command,' ')){
+				ID1 = command;
+				if( this->buildingLayout.find(command) == this->buildingLayout.end() ) return 3;
+			}else return 1;
+
+			if(std::getline(args,command,' ')){
+				x = std::atoi(command.c_str())-1;
+				if( x<0 ) return 2;
+			}else return 1;
+
+			if(std::getline(args,command,' ')){
+				y = std::atoi(command.c_str())-1;
+				if( y<0 ) return 2;
+			}else return 1;
+
+			ignite(ID1,x,y);
+			return 0;
+		}else if(command=="deflagrate"){
+			std::string ID1;
+			int x,y,r;
+				if(std::getline(args,command,' ')){
+				ID1 = command;
+					if( this->buildingLayout.find(command) == this->buildingLayout.end() ) return 3;
+				}else return 1;
+
+				if(std::getline(args,command,' ')){
+					x = std::atoi(command.c_str())-1;
+					if( x<0 ) return 2;
+				}else return 1;
+
+				if(std::getline(args,command,' ')){
+					y = std::atoi(command.c_str())-1;
+					if( y<0 ) return 2;
+				}else return 1;
+
+				if(std::getline(args,command,' ')){
+					r = std::atoi(command.c_str());
+					if( r<1 ) return 2;
+				}else r=1;
+
+				deflagrate(ID1,x,y,r);
+				return 0;
+		}else if(command=="block"){
+			std::string ID1;
+			int x,y;
+
+			if(std::getline(args,command,' ')){
+				ID1 = command;
+				if( this->buildingLayout.find(command) == this->buildingLayout.end() ) return 3;
+			}else return 1;
+
+			if(std::getline(args,command,' ')){
+				x = std::atoi(command.c_str())-1;
+				if( x<0 ) return 2;
+			}else return 1;
+
+			if(std::getline(args,command,' ')){
+				y = std::atoi(command.c_str())-1;
+				if( y<0 ) return 2;
+			}else return 1;
+
+			block(ID1,x,y);
+			puts.push_back(input);
+			return 0;
+		}else if(command=="unblock"){
+			std::string ID1;
+			int x,y;
+
+			if(std::getline(args,command,' ')){
+				ID1 = command;
+				if( this->buildingLayout.find(command) == this->buildingLayout.end() ) return 3;
+			}else return 1;
+
+			if(std::getline(args,command,' ')){
+				x = std::atoi(command.c_str())-1;
+				if( x<0 ) return 2;
+			}else return 1;
+
+			if(std::getline(args,command,' ')){
+				y = std::atoi(command.c_str())-1;
+				if( y<0 ) return 2;
+			}else return 1;
+
+			unblock(ID1,x,y);
+			puts.push_back(input);
+			return 0;
+		}else if(command=="put"){
+			std::string ID1;
+			int x,y,ignition;
+
+			if(std::getline(args,command,' ')){
+				ID1 = command;
+				if( this->buildingLayout.find(command) == this->buildingLayout.end() ) return 3;
+			}else return 1;
+
+			if(std::getline(args,command,' ')){
+				x = std::atoi(command.c_str())-1;
+				if( x<0 ) return 2;
+			}else return 1;
+
+			if(std::getline(args,command,' ')){
+				y = std::atoi(command.c_str())-1;
+				if( y<0 ) return 2;
+			}else return 1;
+
+			if(std::getline(args,command,' ')){
+				ignition = std::atoi(command.c_str());
+				if( ignition<0 ) return 2;
+			}else return 1;
+
+			setCell(ID1,x,y,0,ignition,0);
+			puts.push_back(input);
+			return 0;
+		}else if(command=="clear"){
+			std::string ID1;
+			int x,y;
+
+			if(std::getline(args,command,' ')){
+				ID1 = command;
+				if( this->buildingLayout.find(command) == this->buildingLayout.end() ) return 3;
+			}else return 1;
+
+			if(std::getline(args,command,' ')){
+				x = std::atoi(command.c_str())-1;
+				if( x<0 ) return 2;
+			}else return 1;
+
+			if(std::getline(args,command,' ')){
+				y = std::atoi(command.c_str())-1;
+				if( y<0 ) return 2;
+			}else return 1;
+
+			setCell(ID1,x,y,0,0,0);
+			puts.push_back(input);
+			return 0;
+		}else if(command=="save"){
+			std::string filename;
+			if(std::getline(args,command,' ')){
+				return save(command);
+			}else return save();
+		}else if(command=="load"){
+			std::string filename;
+			if(std::getline(args,command,' ')){
+				return load(command);
+			}else return load();
+		}else if(command=="reset"){
+			reset();
+			return 0;
+		}
+
+		return 1;
+		 */
+		
+	}
+
+	private void iterate(int parseInt) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void iterate() {
 		// TODO Auto-generated method stub
 		
 	}
