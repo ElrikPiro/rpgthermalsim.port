@@ -277,13 +277,13 @@ public class Building {
 	}
 
 	private void unblock(String iD, int x, int y) {
-		// TODO Auto-generated method stub
-		
+		Cell c = buildingLayout.get(iD).getCellXY(x, y);
+		c.setReachable();
 	}
 
 	private void block(String iD, int x, int y) {
-		// TODO Auto-generated method stub
-		
+		Cell c = buildingLayout.get(iD).getCellXY(x, y);
+		c.setUnreachable();
 	}
 
 	private void deflagrate(String iD, int x, int y, int r) {

@@ -29,4 +29,14 @@ public class Cell {
 		return false;
 	}
 
+	public void setUnreachable() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setReachable() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
