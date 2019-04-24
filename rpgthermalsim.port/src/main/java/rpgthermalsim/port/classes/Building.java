@@ -248,8 +248,13 @@ public class Building {
 	}
 
 	private void reset() {
-		// TODO Auto-generated method stub
-		
+		buildingLayout.clear();
+		ref.clear();
+		builds.clear();
+		puts.clear();
+		links.clear();
+		iteration = 0;
+		System.gc();
 	}
 
 	private void load() throws IOException {
