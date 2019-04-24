@@ -14,4 +14,9 @@ public class Room {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public Cell getCellXY(int w, int h) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -307,8 +307,7 @@ public class Building {
 	}
 
 	private void setCell(String iD, int w, int h, Integer integer, Integer integer2, Integer integer3) {
-		// TODO Auto-generated method stub
-		
+		buildingLayout.get(iD).getCellXY(w,h).setStatus(integer.intValue(),integer2.intValue(),integer3.intValue());
 	}
 
 	private void newRoom(String iD, int w, int h, String desc) {
