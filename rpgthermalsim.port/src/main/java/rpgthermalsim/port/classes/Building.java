@@ -2,6 +2,7 @@ package rpgthermalsim.port.classes;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Scanner;
 import java.util.Set;
 import java.io.*;
 
@@ -334,43 +335,25 @@ public class Building {
 		refresh(ref);
 		int h = 0;
 		while(h!=-1) {
-			h = command();
-			switch(h) {
-				case 0:
-					refresh(ref);
-					break;
-				case 1:
-					help();
-					break;
-				default:
-					System.err.printf("Error code: %d\n",h);
-					switch(h) {
-						case 2:
-							System.err.println("wrong input");
-							break;
-						case 3:
-							System.err.println("object already exist");
-							break;
-						case 4:
-							System.err.println("room does not exist");
-							break;
-						case 5:
-							System.err.println("file could not be opened");
-							break;
-						default:
-							System.err.println("UNEXPECTED ERROR CODE");
-							System.exit(-h);
-							break;
-					}
-			}
-			
+			command();
 		}
-		
+			
 	}
 
-	private int command() {
-		// TODO Auto-generated method stub
-		return 0;
+	private void command() {
+		String input;
+		System.out.print("command> ");
+		Scanner teclado = new Scanner(System.in);
+		input = teclado.nextLine();
+		try {
+			_command(input);
+		} catch (BuildingException e) {
+			e.printStackTrace();
+			help();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return;
 	}
 
 	private void help() {
