@@ -19,4 +19,9 @@ public class Room {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public String getDesc() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

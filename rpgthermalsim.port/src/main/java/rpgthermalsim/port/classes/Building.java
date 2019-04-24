@@ -297,12 +297,17 @@ public class Building {
 	}
 
 	private void listRooms() {
-		// TODO Auto-generated method stub
-		
+		String name;
+		Room r;
+		Iterator<String> it = buildingLayout.keySet().iterator();
+		while(it.hasNext()) {
+			name = it.next();
+			r = buildingLayout.get(name);
+			System.out.println("<"+name+">: "+System.lineSeparator()+r.getDesc());
+		}
 	}
 
 	private void linkCells(String iD1, int w1, int h1, String iD2, int w2, int h2) {
-		//buildingLayout[ID1]->getCellXY(x1,y1)->linkRooms(buildingLayout[ID2]->getCellXY(x2,y2));
 		buildingLayout.get(iD1).getCellXY(w1, h1).linkRooms(buildingLayout.get(iD2).getCellXY(w2, h2));
 	}
 
