@@ -312,8 +312,8 @@ public class Building {
 	}
 
 	private void newRoom(String iD, int w, int h, String desc) {
-		// TODO Auto-generated method stub
-		
+		Room r = new Room(w,h,desc);
+		buildingLayout.put(iD, r);
 	}
 
 	private void iterate(int parseInt) {
@@ -330,7 +330,6 @@ public class Building {
 	}
 
 	private void iterate() {
-		// TODO Auto-generated method stub
 		iterate(1);
 	}
 
