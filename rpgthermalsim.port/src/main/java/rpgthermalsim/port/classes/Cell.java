@@ -12,4 +12,9 @@ public class Cell {
 		
 	}
 
+	public void ignite() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

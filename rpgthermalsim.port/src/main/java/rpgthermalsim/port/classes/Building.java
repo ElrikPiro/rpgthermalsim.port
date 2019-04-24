@@ -292,8 +292,12 @@ public class Building {
 	}
 
 	private void ignite(String iD, int x, int y) {
-		// TODO Auto-generated method stub
-		
+		Cell c = buildingLayout.get(iD).getCellXY(x, y);
+		_ignite(c);
+	}
+
+	private void _ignite(Cell c) {
+		c.ignite();
 	}
 
 	private void listRooms() {
