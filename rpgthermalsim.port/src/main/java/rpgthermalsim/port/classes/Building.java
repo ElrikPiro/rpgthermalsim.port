@@ -287,8 +287,20 @@ public class Building {
 	}
 
 	private void deflagrate(String iD, int x, int y, int r) {
-		// TODO Auto-generated method stub
-		
+		Cell c = buildingLayout.get(iD).getCellXY(x, y);
+		_ignite(c);
+		_deflagrate(c,r);
+	}
+
+	private void _deflagrate(Cell c, int r) {
+		Set<Cell> nhood = c.getNeightbourhood();
+		Iterator<Cell> it = nhood.iterator();
+		Cell d;
+		while(it.hasNext()) {
+			d = it.next();
+			if(d.isSpreadable()) _ignite(d);
+			if(d.isSpreadable() && r>1) _deflagrate(d,r-1);
+		}
 	}
 
 	private void ignite(String iD, int x, int y) {
