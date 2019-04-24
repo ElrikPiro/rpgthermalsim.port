@@ -18,10 +18,7 @@ public class Building {
 	
 	public Building(String string) {
 		int iterations = 0;
-		String line = null, nil;
-		boolean failed = false;
-		int ret;
-		
+		String line = null;
 		try {
 			FileReader readfile = new FileReader(string);
 			BufferedReader bf = new BufferedReader(readfile);
@@ -42,7 +39,6 @@ public class Building {
 		} catch (BuildingException e) {
 			e.printStackTrace();
 			System.err.printf("Failed to interpret line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
-			failed = true;
 		}
 		
 		return;
@@ -397,6 +393,7 @@ public class Building {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		teclado.close();
 		return;
 	}
 
