@@ -374,7 +374,50 @@ public class Building {
 	}
 
 	private void help() {
-		// TODO Auto-generated method stub
+		System.out.println(
+				"\trefresh [roomID [roomID [(...)}]] -         cleans the screen and shows all created rooms, "+
+				"if a list of room IDs is provided, it will only show those rooms."+System.lineSeparator()+
+				""+System.lineSeparator()+
+				"\titerate [n] -                               calculates the next n iterations, n defaults to 1"+System.lineSeparator()+
+				""+System.lineSeparator()+
+				"\tbuild roomID w h [description] -            builds a new empty room"+System.lineSeparator()+
+				""+System.lineSeparator()+
+				"\tset roomID x y flame ignition temperature - sets a new status to the selected "+
+				"cell, do not use it on a file you are going to save."+System.lineSeparator()+
+				""+System.lineSeparator()+
+				"\tlink roomID x y roomID x y -                link two cells, intended to connect cells between rooms"+System.lineSeparator()+
+				""+System.lineSeparator()+
+				"\tlist -                                      shows all room names and descriptions"+System.lineSeparator()+
+				""+System.lineSeparator()+
+				"\tignite roomID x y -                         sets a cell on fire"+System.lineSeparator()+
+				""+System.lineSeparator()+
+				"\tdeflagrate roomID x y [r] -                 set a cell and it's neightbours on fire, "+
+				"if r is set higher than 1, it will do it recursively r times"+System.lineSeparator()+
+				""+System.lineSeparator()+
+				"\tblock roomID x y -                          makes a cell unspreadable"+System.lineSeparator()+
+				""+System.lineSeparator()+
+				"\tunblock roomID x y -                        makes a cell spreadable"+System.lineSeparator()+
+				""+System.lineSeparator()+
+				"\tput roomID x y ignition -                   puts an inflamable object on the selected cell, the ignition point is the passed value per 100ºC"+System.lineSeparator()+
+				""+System.lineSeparator()+
+				"\tclear roomID x y -                          resets a cell to the default empty state"+System.lineSeparator()+
+				""+System.lineSeparator()+
+				"\tsave [filename] -                           Saves the layout on the specified file, if no file is specified, it will save it on the last file loaded or saved"+System.lineSeparator()+
+				""+System.lineSeparator()+
+				"\tload [filename] -                           Loads the building layout from the specified file, if no file is specified loads it from the last file red or saved"+System.lineSeparator()+
+				""+System.lineSeparator()+
+				"\treset -                                     Deletes all rooms and resets the iteration counter"+System.lineSeparator()+
+				"Note that blank spaces will act as a separator."+System.lineSeparator()+
+				"GLOSSARY"+System.lineSeparator()+
+				"\troomID -                                    Alphanumeric, no spaces, its the reference for a room"+System.lineSeparator()+
+				"\tflame -                                     Integer, 1 or 0, defines if a cell is on fire"+System.lineSeparator()+
+				"\tignition -                                  Integer, if positive, sets the ignition point of a cell, if negative, defines how many iterations until the fire on that cell unsets"+System.lineSeparator()+
+				"\ttemperature -                               Temperature counters of the Cell, a fire generates 500 of them each iteration, a temperature counter is like 1ºC"+System.lineSeparator()+
+				"\tfilename -                                  The name of the target file to load or save the building data"+System.lineSeparator()+
+				""+System.lineSeparator()+
+				"OTHER INFO"+System.lineSeparator()+
+				"\trooms -                                     Rooms are shown as a 2D array of cells, the first cell (1,1) is the one at the bottom left"+System.lineSeparator()
+				);
 		
 	}
 
