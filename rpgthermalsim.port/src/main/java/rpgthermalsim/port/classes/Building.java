@@ -252,14 +252,35 @@ public class Building {
 		
 	}
 
-	private void load() {
-		// TODO Auto-generated method stub
-		
+	private void load() throws IOException {
+		load(file);
 	}
 
-	private void load(String string) {
-		// TODO Auto-generated method stub
+	private void load(String string) throws IOException {
+		FileReader readfile = new FileReader(string);
+		BufferedReader bf = new BufferedReader(readfile);
+		int iterations = 1;
+		String line;
 		
+		reset();
+		while(bf.ready()) {
+			line = bf.readLine();
+			if(line.isEmpty()) line = "#";
+			try {
+				_command(line);
+			} catch (BuildingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.err.println("Failed to interpret line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
+				bf.close();
+				return;
+			}
+			iterations++;
+		}
+		
+		bf.close();
+		this.file = string;
+		return;
 	}
 
 	private void save() throws IOException{
