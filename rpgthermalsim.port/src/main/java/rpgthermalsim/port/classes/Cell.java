@@ -7,4 +7,9 @@ public class Cell {
 		
 	}
 
+	public void linkRooms(Cell cellXY) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
