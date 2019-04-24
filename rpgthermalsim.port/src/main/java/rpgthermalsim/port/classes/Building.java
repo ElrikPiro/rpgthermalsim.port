@@ -267,13 +267,30 @@ public class Building {
 	}
 
 	private void save() throws IOException{
-		// TODO Auto-generated method stub
-		
+		save(file);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void save(String string) throws IOException{
-		// TODO Auto-generated method stub
+		FileWriter fw = new FileWriter(string);
 		
+		Iterator<String> b = builds.iterator(), p = puts.iterator(), l = links.iterator();
+		@SuppressWarnings("rawtypes")
+		Iterator[] ita = {b,p,l};
+		Iterator<String> it;
+		
+		for( int i = 0; i < ita.length ; i++ ) {
+			it = ita[i];
+			while(it.hasNext()) {
+				fw.write(it.next());
+				fw.write(System.lineSeparator());
+				fw.flush();
+			}
+		}
+		
+		fw.close();
+		file = string;
+		return;
 	}
 
 	private void unblock(String iD, int x, int y) {
