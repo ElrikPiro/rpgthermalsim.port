@@ -317,13 +317,21 @@ public class Building {
 	}
 
 	private void iterate(int parseInt) {
-		// TODO Auto-generated method stub
+		Set<String> lay = buildingLayout.keySet();
+		Iterator<String> it;
 		
+		for(int i = 0;i<parseInt;i++) {
+			this.iteration++;
+			it = lay.iterator();
+			while(it.hasNext()) {
+				buildingLayout.get(it.next()).iterate();
+			}
+		}
 	}
 
 	private void iterate() {
 		// TODO Auto-generated method stub
-		
+		iterate(1);
 	}
 
 	/*

@@ -5,4 +5,9 @@ public class Room {
 		//TODO
 		return null;
 	}
+
+	public void iterate() {
+		// TODO Auto-generated method stub
+		
+	}
 }
