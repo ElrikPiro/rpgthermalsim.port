@@ -1,27 +1,77 @@
 package rpgthermalsim.port.classes;
 
+import java.util.ArrayList;
+
 public class Room {
+	ArrayList<Cell> layout;
+	int w,h;
+	private String desc;
+
 	public Room(int w, int h, String desc) {
-		// TODO Auto-generated constructor stub
+		this.w = w;
+		this.h = h;
+		this.desc = desc;
+		
+		for(int i = 0;i<w*h;i++) {
+			Cell c = new Cell("0,0,0,1");
+			layout.add(i, c);
+		}
+		
+		setNeigthbours();
 	}
 
-	public String toString(){
-		//TODO
-		return null;
-	}
-
-	public void iterate() {
-		// TODO Auto-generated method stub
+	private void setNeigthbours() {
+		for(int i = 0; i < w*h; i++) {
+			int jw = (i%w);
+			int jh = (i/w);
+			
+			jh--; jw--;
+			if((jw)>=0 && (jw<w) && jh>=0 && jh<h) layout.get(i).addNeightbour(layout.get(jw+jh*w));
+			jw++;
+			if((jw)>=0 && (jw<w) && jh>=0 && jh<h) layout.get(i).addNeightbour(layout.get(jw+jh*w));
+			jw++;
+			if((jw)>=0 && (jw<w) && jh>=0 && jh<h) layout.get(i).addNeightbour(layout.get(jw+jh*w));
+			
+			jh++;
+			if((jw)>=0 && (jw<w) && jh>=0 && jh<h) layout.get(i).addNeightbour(layout.get(jw+jh*w));
+			jw-=2;
+			if((jw)>=0 && (jw<w) && jh>=0 && jh<h) layout.get(i).addNeightbour(layout.get(jw+jh*w));
+			
+			jh++;
+			if((jw)>=0 && (jw<w) && jh>=0 && jh<h) layout.get(i).addNeightbour(layout.get(jw+jh*w));
+			jw++;
+			if((jw)>=0 && (jw<w) && jh>=0 && jh<h) layout.get(i).addNeightbour(layout.get(jw+jh*w));
+			jw++;
+			if((jw)>=0 && (jw<w) && jh>=0 && jh<h) layout.get(i).addNeightbour(layout.get(jw+jh*w));
+		}
 		
 	}
 
-	public Cell getCellXY(int w, int h) {
-		// TODO Auto-generated method stub
-		return null;
+	public String toString(){
+		String str = "";
+		str.concat(this.desc + System.lineSeparator());
+		for(int ih = this.h-1;ih>=0;ih--) {
+			for(int jw = 0 ; jw < this.w ; jw++) {
+				str.concat(this.layout.get(ih*this.w+jw).toString());
+			}
+			str.concat(System.lineSeparator());
+		}
+		return str;
+	}
+
+	public void iterate() {
+		for(int i = 0;i<w*h;i++) layout.get(i).spread();
+		for(int i = 0;i<w*h;i++) layout.get(i).commitStatus();
+		for(int i = 0;i<w*h;i++) layout.get(i).checkFlashpoint();
+		for(int i = 0;i<w*h;i++) layout.get(i).dissipateHeat();
+	}
+
+	public Cell getCellXY(int x, int y) throws RoomException {
+		if(x >= w || y >= h || x < 0 || y < 0) throw new RoomException("The requested cell does not exist.");
+		return layout.get(w*y+x);
 	}
 
 	public String getDesc() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.desc;
 	}
 }
