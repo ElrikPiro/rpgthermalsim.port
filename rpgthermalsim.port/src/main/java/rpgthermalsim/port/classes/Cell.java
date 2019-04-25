@@ -1,76 +1,171 @@
 package rpgthermalsim.port.classes;
 
+import java.util.Iterator;
 import java.util.Set;
 
 public class Cell {
+	final char[] RESET = {0x1b,'[','3','9',';','4','9','m','\0'};
+	final char[] FIRE = {0x1b,'[','4','1','m','\0'};
+	final char[] HEAT = {0x1b,'[','1','0','0','m','\0'};
+	final char[] INFLAMMABLE = {0x1b,'[','4','4','m','\0'};
+	
+	int flame;
+	int ignition;
+	int temp_counters;
+	int spreadable; //boolean
 
-	public Cell(String string) {
-		// TODO Auto-generated constructor stub
+	int aux_counters = 0;
+
+	Set<Cell> neightbours;
+
+	public Cell(String string) throws CellException {
+		String[] aux = string.split(",");
+		if(aux.length != 4) throw new CellException("Cell cannot be created, wrong parameter '"+string+"'.");
+		flame = Integer.parseInt(aux[0]);
+		ignition = Integer.parseInt(aux[1]);
+		temp_counters = Integer.parseInt(aux[2]);
+		spreadable = Integer.parseInt(aux[3]);
+		aux_counters = 0;
 	}
 
 	public void setStatus(int intValue, int intValue2, int intValue3) {
-		// TODO Auto-generated method stub
-		
+		flame = intValue;
+		ignition = intValue2;
+		temp_counters = intValue3;
 	}
 
-	public void linkRooms(Cell cellXY) {
-		// TODO Auto-generated method stub
-		
+	public void linkCells(Cell cellXY) {
+		this.addNeightbour(cellXY);
+		cellXY.addNeightbour(this);
 	}
 
 	public void ignite() {
-		// TODO Auto-generated method stub
+		if(this.ignition > 0) {
+			this.setStatus(1,this.ignition*-10,this.temp_counters);
+		}else if(this.flame==1) {
+			this.setStatus(1, this.ignition-1, this.temp_counters);
+		}else {
+			this.setStatus(1, -2, this.temp_counters);
+		}
 		
 	}
 
 	public Set<Cell> getNeightbourhood() {
-		// TODO Auto-generated method stub
-		return null;
+		return neightbours;
 	}
 
 	public boolean isSpreadable() {
-		// TODO Auto-generated method stub
-		return false;
+		return this.spreadable==1;
 	}
 
 	public void setUnreachable() {
-		// TODO Auto-generated method stub
-		
+		this.spreadable = 0;
 	}
 
 	public void setReachable() {
-		// TODO Auto-generated method stub
-		
+		this.spreadable = 1;
 	}
 
 	public void spread() {
-		// TODO Auto-generated method stub
+		if(!isSpreadable()) return;
+		int accumulate = temp_counters;
+		int avg = 0;
+		int flanders = 1;
+		Iterator<Cell> it = this.neightbours.iterator();
+		while(it.hasNext()) {
+			Cell c = it.next();
+			if(c.isSpreadable()) {
+				accumulate += c.temp_counters;
+				flanders++;
+			}
+		}
 		
+		avg = accumulate/flanders;
+		addCounters(avg-temp_counters);
+	}
+
+	private void addCounters(int i) {
+		this.aux_counters += i;
 	}
 
 	public void commitStatus() {
-		// TODO Auto-generated method stub
-		
+		if(aux_counters==0 && this.temp_counters>0) aux_counters--;
+		this.temp_counters += aux_counters;
+		this.aux_counters = 0;
 	}
 
 	public void checkFlashpoint() {
-		// TODO Auto-generated method stub
-		
+		if((this.temp_counters > this.ignition*100) && (this.ignition > 0)) {
+			this.flame = 1;
+			this.ignition *= -10;
+		}
+		else if(this.ignition <= -1){
+			if(++this.ignition==0) this.flame = 0;
+		}
+
+		if(this.flame==1) this.temp_counters += 750;
 	}
 
 	public void dissipateHeat() {
-		// TODO Auto-generated method stub
+		//TODO: mejorar disipación de calor con celdas disipadoras
+		int flanders = 0;
+		int count = 0;
+		
+		Iterator<Cell> it = this.neightbours.iterator();
+		while(it.hasNext()) {
+			Cell c = it.next();
+			if(c.isSpreadable()) flanders++;
+		}
+		
+		if(this.flame <= 0 && this.temp_counters >= 10) this.temp_counters -= this.temp_counters/10;
+		
+		it = this.neightbours.iterator();
+		while(it.hasNext()) {
+			Cell c = it.next();
+			if(this.temp_counters<=0) break;
+			if(c.isSpreadable() && c.temp_counters == 0) {
+				++count;
+				if(count>=flanders/2) {
+					this.temp_counters--;
+					break;
+				}
+			}
+		}
 		
 	}
 	
 	public String toString() {
-		return null;
-		// TODO
+		StringBuilder oss = new StringBuilder();
+		oss.append("[");
+		if(this.flame==1) {
+			oss.append(FIRE);
+			oss.append("*");
+		}else if(!this.isSpreadable()) {
+			oss.append("###");
+		}else if(this.temp_counters>20) {
+			oss.append(HEAT);
+			if(this.temp_counters < 50) oss.append("   ");
+			else if(this.temp_counters < 100) oss.append(" "+this.temp_counters);
+			else if(this.temp_counters < 1000) oss.append(this.temp_counters);
+			else if(this.temp_counters < 10000) oss.append(" "+this.temp_counters/1000+"k");
+			else if(this.temp_counters < 100000) oss.append(this.temp_counters/1000+"k");
+			else if(this.temp_counters < 1000000) oss.append("."+this.temp_counters/100000+"M");
+			else oss.append("***");
+		}else if(this.ignition>0) {
+			oss.append(INFLAMMABLE);
+			if(this.ignition<10) oss.append(" "+this.ignition+" ");
+			else if(this.ignition<100) oss.append(" "+this.ignition);
+			else if(this.ignition<1000) oss.append(this.ignition);
+			else oss.append("^^^");
+		}else {
+			oss.append("   ");
+		}
+		
+		return oss.toString();
 	}
 
 	public void addNeightbour(Cell cell) {
-		// TODO Auto-generated method stub
-		
+		if(cell != this) this.neightbours.add(cell);
 	}
 
 }
