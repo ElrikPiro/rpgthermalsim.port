@@ -39,12 +39,15 @@ public class Building {
 		} catch (BuildingException e) {
 			e.printStackTrace();
 			System.err.printf("Failed to interpret line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
+		} catch (RoomException e) {
+			e.printStackTrace();
+			System.err.printf("Room exception at line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
 		}
 		
 		return;
 	}
 
-	private void _command(String line) throws BuildingException, IOException{
+	private void _command(String line) throws BuildingException, IOException, RoomException{
 		String command;
 		String[] args;
 		String ID;
@@ -279,6 +282,9 @@ public class Building {
 				System.err.println("Failed to interpret line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
 				bf.close();
 				return;
+			} catch (RoomException e) {
+				System.err.println("Room exception at line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
+				e.printStackTrace();
 			}
 			iterations++;
 		}
@@ -315,17 +321,17 @@ public class Building {
 		return;
 	}
 
-	private void unblock(String iD, int x, int y) {
+	private void unblock(String iD, int x, int y) throws RoomException {
 		Cell c = buildingLayout.get(iD).getCellXY(x, y);
 		c.setReachable();
 	}
 
-	private void block(String iD, int x, int y) {
+	private void block(String iD, int x, int y) throws RoomException {
 		Cell c = buildingLayout.get(iD).getCellXY(x, y);
 		c.setUnreachable();
 	}
 
-	private void deflagrate(String iD, int x, int y, int r) {
+	private void deflagrate(String iD, int x, int y, int r) throws RoomException {
 		Cell c = buildingLayout.get(iD).getCellXY(x, y);
 		_ignite(c);
 		_deflagrate(c,r);
@@ -342,7 +348,7 @@ public class Building {
 		}
 	}
 
-	private void ignite(String iD, int x, int y) {
+	private void ignite(String iD, int x, int y) throws RoomException {
 		Cell c = buildingLayout.get(iD).getCellXY(x, y);
 		_ignite(c);
 	}
@@ -362,11 +368,11 @@ public class Building {
 		}
 	}
 
-	private void linkCells(String iD1, int w1, int h1, String iD2, int w2, int h2) {
+	private void linkCells(String iD1, int w1, int h1, String iD2, int w2, int h2) throws RoomException {
 		buildingLayout.get(iD1).getCellXY(w1, h1).linkRooms(buildingLayout.get(iD2).getCellXY(w2, h2));
 	}
 
-	private void setCell(String iD, int w, int h, Integer integer, Integer integer2, Integer integer3) {
+	private void setCell(String iD, int w, int h, Integer integer, Integer integer2, Integer integer3) throws RoomException {
 		buildingLayout.get(iD).getCellXY(w,h).setStatus(integer.intValue(),integer2.intValue(),integer3.intValue());
 	}
 
@@ -417,6 +423,8 @@ public class Building {
 			e.printStackTrace();
 			help();
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (RoomException e) {
 			e.printStackTrace();
 		}
 		teclado.close();
