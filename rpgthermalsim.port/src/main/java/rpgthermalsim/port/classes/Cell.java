@@ -1,5 +1,6 @@
 package rpgthermalsim.port.classes;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -16,9 +17,10 @@ public class Cell {
 
 	int aux_counters = 0;
 
-	Set<Cell> neightbours;
+	HashSet<Cell> neightbours;
 
 	public Cell(String string) throws CellException {
+		neightbours = new HashSet<Cell>();
 		String[] aux = string.split(",");
 		if(aux.length != 4) throw new CellException("Cell cannot be created, wrong parameter '"+string+"'.");
 		flame = Integer.parseInt(aux[0]);

@@ -15,9 +15,26 @@ public class Building {
 	protected Layout ref;
 	protected ArrayList<String> builds,puts,links;
 	protected String file;
+	private Scanner teclado;
+	
+	public Building() {
+		ref = new Layout();
+		buildingLayout = new Layout();
+		builds = new ArrayList<String>();
+		puts = new ArrayList<String>();
+		links = new ArrayList<String>();
+		file = "";
+		teclado = new Scanner(System.in);
+	}
 	
 	public Building(String string) {
-		int iterations = 0;
+		ref = new Layout();
+		buildingLayout = new Layout();
+		builds = new ArrayList<String>();
+		puts = new ArrayList<String>();
+		links = new ArrayList<String>();
+		file = "";int iterations = 0;
+		teclado = new Scanner(System.in);
 		String line = null;
 		try {
 			FileReader readfile = new FileReader(string);
@@ -398,11 +415,6 @@ public class Building {
 		iterate(1);
 	}
 
-	/*
-	 * Do nothing
-	 */
-	public Building() {}
-
 	public void loop() {
 		refresh(ref);
 		int h = 0;
@@ -415,7 +427,6 @@ public class Building {
 	private void command() {
 		String input;
 		System.out.print("command> ");
-		Scanner teclado = new Scanner(System.in);
 		input = teclado.nextLine();
 		try {
 			_command(input);
@@ -427,7 +438,6 @@ public class Building {
 		} catch (RoomException e) {
 			e.printStackTrace();
 		}
-		teclado.close();
 		return;
 	}
 

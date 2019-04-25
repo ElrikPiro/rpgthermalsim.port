@@ -8,6 +8,7 @@ public class Room {
 	private String desc;
 
 	public Room(int w, int h, String desc) {
+		layout = new ArrayList<Cell>();
 		this.w = w;
 		this.h = h;
 		this.desc = desc;
