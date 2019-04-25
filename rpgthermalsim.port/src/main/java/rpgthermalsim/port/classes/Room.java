@@ -13,8 +13,15 @@ public class Room {
 		this.desc = desc;
 		
 		for(int i = 0;i<w*h;i++) {
-			Cell c = new Cell("0,0,0,1");
-			layout.add(i, c);
+			Cell c;
+			try {
+				c = new Cell("0,0,0,1");
+				layout.add(i, c);
+			} catch (CellException e) {
+				e.printStackTrace();
+				System.err.println("This shouldn't ever happened.");
+				System.exit(-1);
+			}
 		}
 		
 		setNeigthbours();
