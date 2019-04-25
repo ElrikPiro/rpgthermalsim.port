@@ -9,16 +9,16 @@ public class Rpgthermalsim {
 		Building build;
 		
 		switch(args.length) {
-			case 1:
+			case 0:
 				build = new Building();
 				build.loop();
 				break;
-			case 2:
-				build = new Building(args[1]);
+			case 1:
+				build = new Building(args[0]);
 				build.loop();
 				break;
 			default:
-				System.err.println("usage:\\nrpg-thermal-sim [filename]");
+				System.err.println("usage:"+System.lineSeparator()+".\rpg-thermal-sim [filename]");
 				System.exit(-1);
 				break;
 		}
