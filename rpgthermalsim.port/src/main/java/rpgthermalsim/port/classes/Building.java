@@ -369,7 +369,7 @@ public class Building {
 	}
 
 	private void linkCells(String iD1, int w1, int h1, String iD2, int w2, int h2) throws RoomException {
-		buildingLayout.get(iD1).getCellXY(w1, h1).linkRooms(buildingLayout.get(iD2).getCellXY(w2, h2));
+		buildingLayout.get(iD1).getCellXY(w1, h1).linkCells(buildingLayout.get(iD2).getCellXY(w2, h2));
 	}
 
 	private void setCell(String iD, int w, int h, Integer integer, Integer integer2, Integer integer3) throws RoomException {
