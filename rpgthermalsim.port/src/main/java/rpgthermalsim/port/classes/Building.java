@@ -120,13 +120,13 @@ public class Building {
 				}
 				else desc = "Room without description";
 				
-				newRoom(ID,w,h,desc);
+				newRoom(ID, w, h, desc);
 				
-				ref.replace(ID, this.buildingLayout.get(ID));
+				ref.put(ID, this.buildingLayout.get(ID));
 				builds.add(line);
 				return;
 			case "set":
-				Integer[] values = {flame,ignition,temperature};
+				int[] values = new int[3];
 				
 				if(args.length<4) throw new BuildingException("set command requires at least 3 parameters.");
 				
@@ -139,10 +139,10 @@ public class Building {
 				
 				for(int i = 4;i<args.length;i++) {
 					if(i>6) break;
-					values[i-4] = new Integer(args[i]);
-					if(i-4 == 0 && values[i-4].intValue()<0 || values[i-4].intValue()>1) throw new BuildingException("flame value must be 1 or 0.");
-					if(i-5 == 0 && values[i-4].intValue()>0 && values[i-5].intValue()>0) throw new BuildingException("flame and ignition cant be positive at the same time.");
-					if(i-6 == 0 && values[i-6].intValue()<0) throw new BuildingException("temperature cannot be negative.");
+					values[i-4] = Integer.parseInt(args[i]);
+					if(i-4 == 0 && (values[i-4]<0 || values[i-4]>1) ) throw new BuildingException("flame value must be 1 or 0.");
+					if(i-5 == 0 && values[i-4]>0 && values[i-5]>0) throw new BuildingException("flame and ignition cant be positive at the same time.");
+					if(i-6 == 0 && values[i-6]<0) throw new BuildingException("temperature cannot be negative.");
 				}
 				
 				setCell(ID,w,h,values[0],values[1],values[2]);
