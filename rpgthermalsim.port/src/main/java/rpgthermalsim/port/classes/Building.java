@@ -84,14 +84,17 @@ public class Building {
 		}else if(command.charAt(0)=='#') return;
 		
 		switch(command) {
+			case "help":
+				help();
+				return;
 			case "refresh":
 				ref.clear();
 				for(int i = 1;i<args.length;i++) {
 					if(!this.buildingLayout.containsKey(args[i])) throw new BuildingException(args[i]+" is not a valid key.");
-					ref.replace(args[i], this.buildingLayout.get(args[i]));
+					ref.put(args[i], this.buildingLayout.get(args[i]));
 				}
 				
-				if(ref.isEmpty()) ref = this.buildingLayout;
+				if(ref.isEmpty()) ref = (Layout) this.buildingLayout.clone();
 				refresh(ref);
 				
 				return;
