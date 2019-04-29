@@ -56,15 +56,15 @@ public class Room {
 	}
 
 	public String toString(){
-		String str = "";
-		str.concat(this.desc + System.lineSeparator());
+		StringBuilder oss = new StringBuilder();
+		oss.append(this.desc + System.lineSeparator());
 		for(int ih = this.h-1;ih>=0;ih--) {
 			for(int jw = 0 ; jw < this.w ; jw++) {
-				str.concat(this.layout.get(ih*this.w+jw).toString());
+				oss.append(this.layout.get(ih*this.w+jw).toString());
 			}
-			str.concat(System.lineSeparator());
+			oss.append(System.lineSeparator());
 		}
-		return str;
+		return oss.toString();
 	}
 
 	public void iterate() {

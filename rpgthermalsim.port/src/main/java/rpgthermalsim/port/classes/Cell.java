@@ -141,7 +141,7 @@ public class Cell {
 		oss.append("[");
 		if(this.flame==1) {
 			oss.append(FIRE);
-			oss.append("*");
+			oss.append(" * ");
 		}else if(!this.isSpreadable()) {
 			oss.append("###");
 		}else if(this.temp_counters>20) {
@@ -162,7 +162,8 @@ public class Cell {
 		}else {
 			oss.append("   ");
 		}
-		
+		oss.append(RESET);
+		oss.append("]");
 		return oss.toString();
 	}
 
