@@ -152,7 +152,7 @@ public class Building {
 				setCell(ID,w,h,values[0],values[1],values[2]);
 				return;
 			case "exit":
-				System.exit(0);
+				throw new IOException("Exit requested.");
 			case "link":
 				String ID1,ID2;
 				int w1,h1,w2,h2;
@@ -426,12 +426,12 @@ public class Building {
 		refresh(ref);
 		int h = 0;
 		while(h!=-1) {
-			command();
+			h = command();
 		}
 			
 	}
 
-	private void command() {
+	private int command() {
 		String input;
 		System.out.print("command> ");
 		input = teclado.nextLine();
@@ -442,10 +442,11 @@ public class Building {
 			help();
 		} catch (IOException e) {
 			e.printStackTrace();
+			return -1;
 		} catch (RoomException e) {
 			e.printStackTrace();
 		}
-		return;
+		return 0;
 	}
 
 	private void help() {
