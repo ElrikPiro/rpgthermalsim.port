@@ -1,4 +1,4 @@
-package rpgthermalsim.port.classes;
+package rpgthermalsim.port.exceptions;
 
 public class BuildingException extends Exception {
 

@@ -2,33 +2,60 @@ package rpgthermalsim.port.classes;
 
 import static org.junit.Assert.*;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+
+import rpgthermalsim.port.exceptions.RoomException;
 
 public class RoomTest {
 
-	@Test
-	public final void testRoom() {
-		fail("Not yet implemented"); // TODO
+	Room r;
+	
+	@Before
+	public final void setUp() {
+		r = new Room((int) Math.random()*100+5,(int) Math.random()*100+5,"TEST ROOM");
+	}
+	
+	@After
+	public final void tearDown() {
+		r = null;
+		System.gc();
 	}
 
 	@Test
-	public final void testToString() {
-		fail("Not yet implemented"); // TODO
+	public final void testToString() throws RoomException {
+		assertTrue(r.toString().length()==(r.getDesc().length()+System.lineSeparator().length()+(14*r.h*r.w)+(System.lineSeparator().length()*r.h)));
 	}
 
 	@Test
-	public final void testIterate() {
-		fail("Not yet implemented"); // TODO
+	public final void testIterate() throws RoomException {
+		for(int i = 0; i<r.h;i++) {
+			for(int j = 0; j<r.w;j++) {
+				r.getCellXY(j, i).setStatus(0, 1, 200);
+			}
+		}
+		r.iterate();
+		for(int i = 0; i<r.h;i++) {
+			for(int j = 0; j<r.w;j++) {
+				assertTrue(r.getCellXY(j, i).flame==1);
+				assertTrue(r.getCellXY(j, i).ignition==-10);
+				assertTrue(r.getCellXY(j, i).temp_counters>750);
+				assertTrue(r.getCellXY(j, i).aux_counters==0);
+			}
+		}
 	}
 
 	@Test
-	public final void testGetCellXY() {
-		fail("Not yet implemented"); // TODO
+	public final void testGetCellXY() throws RoomException {
+		assertNotNull(r.getCellXY((int) Math.random()*r.w+1, (int) Math.random()*r.h+1));
 	}
+	
 
-	@Test
+	@Ignore
 	public final void testGetDesc() {
-		fail("Not yet implemented"); // TODO
+		fail("No need");
 	}
 
 }

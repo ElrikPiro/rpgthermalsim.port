@@ -9,6 +9,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import rpgthermalsim.port.exceptions.CellException;
+
 public class CellTest {
 
 	Cell underTest;
@@ -129,7 +131,11 @@ public class CellTest {
 			c.setReachable();
 		}
 		underTest.spread();
-		assertTrue(underTest.aux_counters == underTest.temp_counters/(numneighbours+1));
+		System.out.println(numneighbours);
+		System.out.println(-underTest.aux_counters);
+		System.out.println(underTest.temp_counters/(numneighbours+1));
+		assertTrue(((-underTest.aux_counters) + underTest.temp_counters/(numneighbours+1)) == 1000);
+		underTest.aux_counters = 0;
 	}
 	
 	@Test
@@ -238,10 +244,24 @@ public class CellTest {
 			underTest.setStatus(0, 0, i);
 			assertTrue(i<50 && underTest.toString().charAt(10)==' ' ||
 					i>50 && i<1000 && underTest.toString().charAt(10)!=' ' ||
-					i>999 && i<100000 && underTest.toString().charAt(10)!='k' ||
-					i>99999 && i<1000000 && underTest.toString().charAt(10)!='M' ||
-					underTest.toString().charAt(10)!='*');
+					i>999 && i<100000 && underTest.toString().charAt(10)=='k' ||
+					i>99999 && i<1000000 && underTest.toString().charAt(10)=='M' ||
+					i>999999 && underTest.toString().charAt(10)=='*');
 		}
+		for(int i = 2;i<10000;i*=2) {
+			underTest.setStatus(0, i, 0);
+			assertTrue(i<10 && underTest.toString().charAt(9)==' ' ||
+					i>9 && i<1000 && underTest.toString().charAt(9)!=' ' ||
+					i>999 && underTest.toString().charAt(9)=='^');
+		}
+		
+		underTest.setStatus(0, 0, 0);
+		stringBuilder = new StringBuilder();
+		stringBuilder.append("[   ");
+		stringBuilder.append(underTest.RESET);
+		stringBuilder.append("]");
+		assertTrue(underTest.toString().equals(stringBuilder.toString()));
+		
 	}
 
 	@Ignore
