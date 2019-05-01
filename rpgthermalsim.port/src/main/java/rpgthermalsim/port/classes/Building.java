@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Set;
+
+import rpgthermalsim.port.exceptions.BuildingException;
+import rpgthermalsim.port.exceptions.RoomException;
+
 import java.io.*;
 
 public class Building {

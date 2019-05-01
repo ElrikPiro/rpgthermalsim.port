@@ -9,6 +9,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import rpgthermalsim.port.exceptions.CellException;
+
 public class CellTest {
 
 	Cell underTest;

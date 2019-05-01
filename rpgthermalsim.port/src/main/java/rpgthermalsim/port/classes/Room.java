@@ -2,6 +2,9 @@ package rpgthermalsim.port.classes;
 
 import java.util.ArrayList;
 
+import rpgthermalsim.port.exceptions.CellException;
+import rpgthermalsim.port.exceptions.RoomException;
+
 public class Room {
 	ArrayList<Cell> layout;
 	int w,h;
