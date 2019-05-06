@@ -186,39 +186,6 @@ public class CellTest {
 	public final void testDissipateHeat() {
 		return; //TODO: Esta opción dejará de ser usada en pos de un sistema de disipación posterior
 	}
-
-	/*
-	 * 	public String toString() {
-		StringBuilder oss = new StringBuilder();
-		oss.append("[");
-		if(this.flame==1) {
-			oss.append(FIRE);
-			oss.append(" * ");
-		}else if(!this.isSpreadable()) {
-			oss.append("###");
-		}else if(this.temp_counters>20) {
-			oss.append(HEAT);
-			if(this.temp_counters < 50) oss.append("   ");
-			else if(this.temp_counters < 100) oss.append(" "+this.temp_counters);
-			else if(this.temp_counters < 1000) oss.append(this.temp_counters);
-			else if(this.temp_counters < 10000) oss.append(" "+this.temp_counters/1000+"k");
-			else if(this.temp_counters < 100000) oss.append(this.temp_counters/1000+"k");
-			else if(this.temp_counters < 1000000) oss.append("."+this.temp_counters/100000+"M");
-			else oss.append("***");
-		}else if(this.ignition>0) {
-			oss.append(INFLAMMABLE);
-			if(this.ignition<10) oss.append(" "+this.ignition+" ");
-			else if(this.ignition<100) oss.append(" "+this.ignition);
-			else if(this.ignition<1000) oss.append(this.ignition);
-			else oss.append("^^^");
-		}else {
-			oss.append("   ");
-		}
-		oss.append(RESET);
-		oss.append("]");
-		return oss.toString();
-	}
-	 */
 	
 	@Test
 	public final void testToString() {
