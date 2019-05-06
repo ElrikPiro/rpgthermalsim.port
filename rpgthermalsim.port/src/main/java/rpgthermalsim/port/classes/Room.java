@@ -1,11 +1,12 @@
 package rpgthermalsim.port.classes;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 import rpgthermalsim.port.exceptions.CellException;
 import rpgthermalsim.port.exceptions.RoomException;
 
-public class Room {
+public class Room implements Digestable{
 	ArrayList<Cell> layout;
 	int w,h;
 	private String desc;
@@ -84,5 +85,17 @@ public class Room {
 
 	public String getDesc() {
 		return this.desc;
+	}
+
+	@Override
+	public String digest() throws NoSuchAlgorithmException {
+		StringBuilder oss = new StringBuilder();
+		oss.append(w);
+		oss.append(h);
+		oss.append(desc);
+		for(int i = 0; i<layout.size();i++) {
+			oss.append(layout.get(i).digest());
+		}
+		return digest(oss.toString());
 	}
 }
