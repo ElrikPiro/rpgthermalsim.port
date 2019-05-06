@@ -19,14 +19,8 @@ public class Room implements Digestable{
 		
 		for(int i = 0;i<w*h;i++) {
 			Cell c;
-			try {
-				c = new Cell("0,0,0,1");
-				layout.add(i, c);
-			} catch (CellException e) {
-				e.printStackTrace();
-				System.err.println("This shouldn't ever happened.");
-				System.exit(-1);
-			}
+			c = new Cell();
+			layout.add(i, c);
 		}
 		
 		setNeigthbours();

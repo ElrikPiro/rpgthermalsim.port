@@ -25,6 +25,15 @@ public class Cell implements Digestable{
 
 	HashSet<Cell> neightbours;
 
+	public Cell() {
+		neightbours = new HashSet<Cell>();
+		flame = 0;
+		ignition = 0;
+		temp_counters = 0;
+		spreadable = 1;
+		aux_counters = 0;
+	}
+	
 	public Cell(String string) throws CellException {
 		neightbours = new HashSet<Cell>();
 		String[] aux = string.split(",");
