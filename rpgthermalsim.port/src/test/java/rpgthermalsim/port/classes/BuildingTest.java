@@ -2,6 +2,8 @@ package rpgthermalsim.port.classes;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PipedInputStream;
@@ -19,7 +21,7 @@ public class BuildingTest {
 	PipedOutputStream pr;
 	PrintStream ps;
 	InputStream aux;
-	
+	File test;
 	
 	@Before
 	public final void setUp() throws IOException {
@@ -29,6 +31,7 @@ public class BuildingTest {
 		aux = System.in;
 		System.setIn(in);
 		b = new Building();
+		test = new File("test.txt");
 	}
 	
 	@After
@@ -38,6 +41,9 @@ public class BuildingTest {
 		ps.close();
 		pr.close();
 		in.close();
+		test.delete();
+		test = null;
+		System.gc();
 	}
 	
 	@Test
@@ -84,6 +90,35 @@ public class BuildingTest {
 		
 		b = null;
 		System.gc();
+		b = new Building("test.txt");
+	}
+	
+	@Test
+	public final void failsWhenIncorrectLine() throws IOException {
+		FileWriter fw = new FileWriter("test.txt");
+		fw.append("bild A 5 5");
+		fw.flush();
+		fw.close();
+		b = null;
+		System.gc();
+		b = new Building("test.txt");
+		ps.println("load test.txt");
+		ps.println("exit");
+		b.loop();
+	}
+	
+	@Test
+	public final void failsWhenInvalidCellReferenced() throws IOException {
+		FileWriter fw = new FileWriter("test.txt");
+		fw.append("build A 5 5"+System.lineSeparator()+"set A 10 4 0 0 0"+System.lineSeparator());
+		fw.flush();
+		fw.close();
+		ps.println("load test.txt");
+		ps.println("build A 5 5"+System.lineSeparator()+"set A 10 4 0 0 0"+System.lineSeparator());
+		ps.println("exit");
+		b.loop();
+		b = null;
+		System.setIn(aux);
 		b = new Building("test.txt");
 	}
 
