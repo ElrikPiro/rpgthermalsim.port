@@ -9,8 +9,9 @@ import rpgthermalsim.port.exceptions.BuildingException;
 import rpgthermalsim.port.exceptions.RoomException;
 
 import java.io.*;
+import java.security.NoSuchAlgorithmException;
 
-public class Building {
+public class Building implements Digestable{
 	
 	final public static char CLEAR[] = {0x1b,'[','2','J','\0'};
 	public int iteration = 0;
@@ -506,6 +507,42 @@ public class Building {
 			System.out.print("CODE: <" + key + ">" + System.lineSeparator() + ref2.get(key).toString());
 		}
 		
+	}
+
+	@Override
+	public String digest() throws NoSuchAlgorithmException {
+		StringBuilder oss = new StringBuilder();
+		Iterator<String> keys;
+		String key;
+		oss.append(iteration);
+		
+		keys = buildingLayout.keySet().iterator();
+		while(keys.hasNext()) {
+			key = keys.next();
+			oss.append(buildingLayout.get(key).digest());
+		}
+		
+		keys = ref.keySet().iterator();
+		while(keys.hasNext()) {
+			key = keys.next();
+			oss.append(ref.get(key).digest());
+		}
+		
+		for(int i = 0;i<builds.size();i++) {
+			oss.append(builds.get(i));
+		}
+		
+		for(int i = 0;i<puts.size();i++) {
+			oss.append(puts.get(i));
+		}
+		
+		for(int i = 0;i<links.size();i++) {
+			oss.append(links.get(i));
+		}
+		
+		oss.append(file);
+		
+		return digest(oss.toString());
 	}
 
 }

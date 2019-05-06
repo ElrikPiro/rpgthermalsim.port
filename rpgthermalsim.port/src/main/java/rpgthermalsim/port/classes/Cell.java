@@ -1,12 +1,16 @@
 package rpgthermalsim.port.classes;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import rpgthermalsim.port.exceptions.CellException;
 
-public class Cell {
+public class Cell implements Digestable{
 	final char[] RESET = {0x1b,'[','3','9',';','4','9','m','\0'};
 	final char[] FIRE = {0x1b,'[','4','1','m','\0'};
 	final char[] HEAT = {0x1b,'[','1','0','0','m','\0'};
@@ -171,6 +175,22 @@ public class Cell {
 
 	public void addNeightbour(Cell cell) {
 		if(cell != this) this.neightbours.add(cell);
+	}
+	
+	@Override
+	public String digest() throws NoSuchAlgorithmException {
+		StringBuilder oss = new StringBuilder();
+		oss.append(flame);
+		oss.append(ignition);
+		oss.append(temp_counters);
+		oss.append(spreadable);
+		oss.append(aux_counters);
+		Iterator<Cell> it = this.neightbours.iterator();
+		while(it.hasNext()) {
+			oss.append(it.next().toString());
+		}
+		oss.append(neightbours.size());
+		return digest(oss.toString());
 	}
 
 }
