@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import rpgthermalsim.port.exceptions.CellException;
+
 public class Cell {
 	final char[] RESET = {0x1b,'[','3','9',';','4','9','m','\0'};
 	final char[] FIRE = {0x1b,'[','4','1','m','\0'};
