@@ -2,6 +2,8 @@ package rpgthermalsim.port.classes;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PipedInputStream;
@@ -19,7 +21,7 @@ public class BuildingTest {
 	PipedOutputStream pr;
 	PrintStream ps;
 	InputStream aux;
-	
+	File test;
 	
 	@Before
 	public final void setUp() throws IOException {
@@ -29,6 +31,7 @@ public class BuildingTest {
 		aux = System.in;
 		System.setIn(in);
 		b = new Building();
+		test = new File("test.txt");
 	}
 	
 	@After
@@ -38,6 +41,9 @@ public class BuildingTest {
 		ps.close();
 		pr.close();
 		in.close();
+		test.delete();
+		test = null;
+		System.gc();
 	}
 	
 	@Test
