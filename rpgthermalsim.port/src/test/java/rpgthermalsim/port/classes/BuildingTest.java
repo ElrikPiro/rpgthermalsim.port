@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
+import java.security.NoSuchAlgorithmException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -120,6 +121,37 @@ public class BuildingTest {
 		b = null;
 		System.setIn(aux);
 		b = new Building("test.txt");
+	}
+	
+	@Test
+	public final void sameBuildingSameDigest() throws NoSuchAlgorithmException {
+		String caseA, caseB;
+		
+		ps.println("build A 5 5");
+		ps.println("exit");
+		b.loop();
+		caseA = b.digest();
+		caseB = b.digest();
+		assertTrue(caseA.compareTo(caseB)==0);
+	}
+	
+	@Test
+	public final void differentBuildingDifferentDigest() throws NoSuchAlgorithmException {
+		String caseA, caseB, caseC;
+		ps.println("build A 5 5");
+		ps.println("exit");
+		b.loop();
+		caseA = b.digest();
+		ps.println("put A 4 4 1");
+		ps.println("exit");
+		b.loop();
+		caseB = b.digest();
+		ps.println("link A 4 4 A 0 0");
+		ps.println("exit");
+		b.loop();
+		caseC = b.digest();
+		assertTrue(caseA.compareTo(caseB)!=0);
+		assertTrue(caseB.compareTo(caseC)!=0);
 	}
 
 }
