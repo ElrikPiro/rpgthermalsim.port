@@ -17,7 +17,7 @@ public class CellTest {
 	
 	@Before
 	public final void setUp() throws CellException{
-		underTest = new Cell("0,0,0,1");
+		underTest = new Cell();
 	}
 	
 	@After
