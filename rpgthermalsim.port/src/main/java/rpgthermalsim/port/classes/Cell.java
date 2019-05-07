@@ -22,6 +22,7 @@ public class Cell implements Digestable{
 	int spreadable; //boolean
 
 	int aux_counters = 0;
+	float insulation = 1.0f; //by default perfect heat conductivity is assumed
 
 	HashSet<Cell> neightbours;
 
