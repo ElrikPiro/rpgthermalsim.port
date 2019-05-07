@@ -124,7 +124,7 @@ public class Cell implements Digestable{
 	}
 
 	public void dissipateHeat() {
-		//TODO: mejorar disipación de calor con celdas disipadoras
+		/*
 		int flanders = 0;
 		int count = 0;
 		
@@ -148,7 +148,7 @@ public class Cell implements Digestable{
 				}
 			}
 		}
-		
+		*/
 	}
 	
 	public String toString() {
