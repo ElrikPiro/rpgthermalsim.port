@@ -41,7 +41,7 @@ public class RoomTest {
 			for(int j = 0; j<r.w;j++) {
 				assertTrue(r.getCellXY(j, i).flame==1);
 				assertTrue(r.getCellXY(j, i).ignition==-10);
-				assertTrue(r.getCellXY(j, i).temp_counters>750);
+				assertTrue(r.getCellXY(j, i).temp_counters>200);
 				assertTrue(r.getCellXY(j, i).aux_counters==0);
 			}
 		}
