@@ -518,6 +518,10 @@ public class Building implements Digestable{
 				"\tload [filename] -                           Loads the building layout from the specified file, if no file is specified loads it from the last file red or saved"+System.lineSeparator()+
 				""+System.lineSeparator()+
 				"\treset -                                     Deletes all rooms and resets the iteration counter"+System.lineSeparator()+
+				""+System.lineSeparator()+
+				"\tsink roomID x y temperature -               Creates a fixed temperature sink and links it to given cell"+System.lineSeparator()+
+				""+System.lineSeparator()+
+				"\tunsink roomID x y -                         Removes fixed temperature sink from the given cell"+System.lineSeparator()+
 				"Note that blank spaces will act as a separator."+System.lineSeparator()+
 				"GLOSSARY"+System.lineSeparator()+
 				"\troomID -                                    Alphanumeric, no spaces, its the reference for a room"+System.lineSeparator()+
