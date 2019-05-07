@@ -81,7 +81,7 @@ public class CellTest {
 
 	@Test
 	public final void testSetUnreachable() {
-		underTest.setUnreachable();
+		underTest.setUnreachable(0.0f);
 		testIsSpreadable();
 		assertFalse(underTest.isSpreadable());
 	}
@@ -103,11 +103,15 @@ public class CellTest {
 		testSetReachable();
 		
 		whenNoNeighbours();
-		
+		Cell c;
 		for(int i = 1;i <= 10;i++) {
 			underTest.neightbours.clear();
 			System.gc();
-			for(int j = 0;j<10;j++) underTest.linkCells(new Cell("0,0,0,0"));
+			for(int j = 0;j<10;j++) {
+				c = new Cell();
+				c.setUnreachable(0.0f);
+				underTest.linkCells(c);
+			}
 			whenNumNeighbours(i);
 		}
 	}
@@ -140,17 +144,20 @@ public class CellTest {
 	
 	@Test
 	public final void testCommitStatus() throws CellException {
-		whenTemperatureReachEquilibrium();
+		//whenTemperatureReachEquilibrium();
 		whenTemperatureUnstable();
 	}
 
+	/*
 	private final void whenTemperatureReachEquilibrium() {
 		underTest.setStatus(0, 0, 1001);
 		underTest.commitStatus();
 		assertTrue(underTest.temp_counters==1000);
 	}
+	*/
 	
 	private final void whenTemperatureUnstable() throws CellException {
+		underTest.setStatus(0, 0, 1000);
 		underTest.linkCells(new Cell("0,0,0,1"));
 		underTest.spread();
 		underTest.commitStatus();
@@ -178,7 +185,7 @@ public class CellTest {
 		underTest.checkFlashpoint();
 		assertTrue(underTest.flame==1
 				&& underTest.ignition==-10
-				&& underTest.temp_counters == 950
+				&& underTest.temp_counters == 400
 				);
 	}
 
@@ -199,7 +206,7 @@ public class CellTest {
 		assertTrue(underTest.toString().equals(stringBuilder.toString()));
 		
 		underTest.setStatus(0, 0, 0);
-		underTest.setUnreachable();
+		underTest.setUnreachable(0.0f);
 		stringBuilder = new StringBuilder();
 		stringBuilder.append("[###");
 		stringBuilder.append(underTest.RESET);
