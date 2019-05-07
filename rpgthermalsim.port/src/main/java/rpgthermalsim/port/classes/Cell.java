@@ -106,7 +106,7 @@ public class Cell implements Digestable{
 	}
 
 	public void commitStatus() {
-		if(aux_counters==0 && this.temp_counters>0) aux_counters--;
+		//if(aux_counters==0 && this.temp_counters>0) aux_counters--;
 		this.temp_counters += aux_counters;
 		this.aux_counters = 0;
 	}
@@ -120,7 +120,7 @@ public class Cell implements Digestable{
 			if(++this.ignition==0) this.flame = 0;
 		}
 
-		if(this.flame==1) this.temp_counters += 750;
+		if(this.flame==1) this.temp_counters += 200;
 	}
 
 	public void dissipateHeat() {
