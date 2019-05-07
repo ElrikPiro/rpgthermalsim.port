@@ -281,7 +281,9 @@ public class Building implements Digestable{
 				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
 				if(x < 0 || y < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
 				
-				this.buildingLayout.get(ID).getCellXY(x, y).linkCells(new FixedTempCell(Integer.parseInt(args[4])));
+				c = new FixedTempCell(Integer.parseInt(args[4]));
+				this.buildingLayout.get(ID).layout.add(c);
+				this.buildingLayout.get(ID).getCellXY(x, y).linkCells(c);
 				
 				puts.add(line);
 				return;
@@ -300,6 +302,7 @@ public class Building implements Digestable{
 					c = it.next();
 					if(c.getClass() == FixedTempCell.class) {
 						this.buildingLayout.get(ID).getCellXY(x, y).getNeightbourhood().remove(c);
+						this.buildingLayout.get(ID).layout.remove(c);
 						break;
 					}
 				}
