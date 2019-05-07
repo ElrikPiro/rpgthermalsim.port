@@ -81,7 +81,7 @@ public class CellTest {
 
 	@Test
 	public final void testSetUnreachable() {
-		underTest.setUnreachable();
+		underTest.setUnreachable(0.0f);
 		testIsSpreadable();
 		assertFalse(underTest.isSpreadable());
 	}
@@ -103,11 +103,15 @@ public class CellTest {
 		testSetReachable();
 		
 		whenNoNeighbours();
-		
+		Cell c;
 		for(int i = 1;i <= 10;i++) {
 			underTest.neightbours.clear();
 			System.gc();
-			for(int j = 0;j<10;j++) underTest.linkCells(new Cell("0,0,0,0"));
+			for(int j = 0;j<10;j++) {
+				c = new Cell();
+				c.setUnreachable(0.0f);
+				underTest.linkCells(c);
+			}
 			whenNumNeighbours(i);
 		}
 	}
@@ -202,7 +206,7 @@ public class CellTest {
 		assertTrue(underTest.toString().equals(stringBuilder.toString()));
 		
 		underTest.setStatus(0, 0, 0);
-		underTest.setUnreachable();
+		underTest.setUnreachable(0.0f);
 		stringBuilder = new StringBuilder();
 		stringBuilder.append("[###");
 		stringBuilder.append(underTest.RESET);
