@@ -35,6 +35,7 @@ public class FixedTempCell extends Cell {
 	
 	@Override
 	public void commitStatus() {
+		temp_counters = fixedTemp;
 		return;
 	}
 	
