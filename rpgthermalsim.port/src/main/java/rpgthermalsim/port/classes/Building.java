@@ -78,6 +78,8 @@ public class Building implements Digestable{
 		Integer flame = new Integer(0);
 		Integer ignition = new Integer(0);
 		Integer temperature  = new Integer(0);
+		Iterator<Cell> it;
+		Cell c;
 		
 		
 		args = line.split(" ");
@@ -269,6 +271,42 @@ public class Building implements Digestable{
 				return;
 			case "reset":
 				reset();
+				return;
+			case "sink":
+				if(args.length<5) throw new BuildingException("sink command requires at least 5 parameters.");
+				
+				ID = args[1];
+				if(!this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" does not exist.");
+				
+				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
+				if(x < 0 || y < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				
+				c = new FixedTempCell(Integer.parseInt(args[4]));
+				this.buildingLayout.get(ID).layout.add(c);
+				this.buildingLayout.get(ID).getCellXY(x, y).linkCells(c);
+				
+				puts.add(line);
+				return;
+			case "unsink":
+				if(args.length<4) throw new BuildingException("unsink command requires at least 4 parameters.");
+				
+				ID = args[1];
+				if(!this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" does not exist.");
+				
+				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
+				if(x < 0 || y < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				
+				it = this.buildingLayout.get(ID).getCellXY(x, y).getNeightbourhood().iterator();
+				
+				while(it.hasNext()) {
+					c = it.next();
+					if(c.getClass() == FixedTempCell.class) {
+						this.buildingLayout.get(ID).getCellXY(x, y).getNeightbourhood().remove(c);
+						this.buildingLayout.get(ID).layout.remove(c);
+						break;
+					}
+				}
+				puts.add(line);
 				return;
 			default:
 				throw new BuildingException("Command "+command+" not supported.");
@@ -484,6 +522,10 @@ public class Building implements Digestable{
 				"\tload [filename] -                           Loads the building layout from the specified file, if no file is specified loads it from the last file red or saved"+System.lineSeparator()+
 				""+System.lineSeparator()+
 				"\treset -                                     Deletes all rooms and resets the iteration counter"+System.lineSeparator()+
+				""+System.lineSeparator()+
+				"\tsink roomID x y temperature -               Creates a fixed temperature sink and links it to given cell"+System.lineSeparator()+
+				""+System.lineSeparator()+
+				"\tunsink roomID x y -                         Removes fixed temperature sink from the given cell"+System.lineSeparator()+
 				"Note that blank spaces will act as a separator."+System.lineSeparator()+
 				"GLOSSARY"+System.lineSeparator()+
 				"\troomID -                                    Alphanumeric, no spaces, its the reference for a room"+System.lineSeparator()+
