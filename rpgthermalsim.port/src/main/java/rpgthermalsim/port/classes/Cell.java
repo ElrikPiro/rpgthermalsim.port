@@ -198,6 +198,7 @@ public class Cell implements Digestable{
 		oss.append(temp_counters);
 		oss.append(spreadable);
 		oss.append(aux_counters);
+		oss.append(insulation);
 		Iterator<Cell> it = this.neightbours.iterator();
 		while(it.hasNext()) {
 			oss.append(it.next().toString());
