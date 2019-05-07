@@ -300,6 +300,7 @@ public class Building implements Digestable{
 					c = it.next();
 					if(c.getClass() == FixedTempCell.class) {
 						this.buildingLayout.get(ID).getCellXY(x, y).getNeightbourhood().remove(c);
+						break;
 					}
 				}
 				puts.add(line);
