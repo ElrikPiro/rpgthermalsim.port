@@ -22,6 +22,7 @@ public class Cell implements Digestable{
 	int spreadable; //boolean
 
 	int aux_counters = 0;
+	float insulation = 1.0f; //by default perfect heat conductivity is assumed
 
 	HashSet<Cell> neightbours;
 
@@ -75,29 +76,29 @@ public class Cell implements Digestable{
 		return this.spreadable==1;
 	}
 
-	public void setUnreachable() {
+	public void setUnreachable(float istn) {
 		this.spreadable = 0;
+		this.insulation = istn;
 	}
 
 	public void setReachable() {
 		this.spreadable = 1;
+		this.insulation = 1.0f;
 	}
 
 	public void spread() {
-		if(!isSpreadable()) return;
-		int accumulate = temp_counters;
+		//if(!isSpreadable()) return;
+		float accumulate = temp_counters;
 		int avg = 0;
-		int flanders = 1;
+		float flanders = 1.0f;
 		Iterator<Cell> it = this.neightbours.iterator();
 		while(it.hasNext()) {
 			Cell c = it.next();
-			if(c.isSpreadable()) {
-				accumulate += c.temp_counters;
-				flanders++;
-			}
+			accumulate += c.temp_counters * c.insulation * this.insulation;
+			flanders+=c.insulation*this.insulation;
 		}
 		
-		avg = accumulate/flanders;
+		avg = (int) (accumulate/flanders);
 		addCounters(avg-temp_counters);
 	}
 
@@ -117,7 +118,10 @@ public class Cell implements Digestable{
 			this.ignition *= -10;
 		}
 		else if(this.ignition <= -1){
-			if(++this.ignition==0) this.flame = 0;
+			if(++this.ignition==0) {
+				this.flame = 0;
+				this.setReachable();
+			}
 		}
 
 		if(this.flame==1) this.temp_counters += 200;
@@ -194,6 +198,7 @@ public class Cell implements Digestable{
 		oss.append(temp_counters);
 		oss.append(spreadable);
 		oss.append(aux_counters);
+		oss.append(insulation);
 		Iterator<Cell> it = this.neightbours.iterator();
 		while(it.hasNext()) {
 			oss.append(it.next().toString());

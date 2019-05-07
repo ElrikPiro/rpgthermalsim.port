@@ -80,7 +80,7 @@ public class Building implements Digestable{
 		Integer temperature  = new Integer(0);
 		Iterator<Cell> it;
 		Cell c;
-		
+		float istn = 0;
 		
 		args = line.split(" ");
 		command = args[0];
@@ -219,7 +219,12 @@ public class Building implements Digestable{
 				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
 				if(x < 0 || y < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
 				
-				block(ID,x,y);
+				if(args.length>4) {
+					istn = Float.parseFloat(args[4]);
+					if(istn >1.0f || istn<0.0f) throw new BuildingException("insulation must be between 0 and 1.");
+				}
+				
+				block(ID,x,y,istn);
 				puts.add(line);
 				return;
 			case "unblock":
@@ -245,6 +250,12 @@ public class Building implements Digestable{
 				
 				ignition = new Integer(Integer.parseInt(args[4]));
 				if(ignition < 0) throw new BuildingException("ignition value must be zero or positive numbers.");
+				
+				if(args.length>5) {
+					istn = Float.parseFloat(args[5]);
+					if(istn >1.0f || istn<0.0f) throw new BuildingException("insulation must be between 0 and 1.");
+					block(ID,x,y,istn);
+				}
 				
 				setCell(ID,x,y,0,ignition.intValue(),0);
 				puts.add(line);
@@ -389,9 +400,9 @@ public class Building implements Digestable{
 		c.setReachable();
 	}
 
-	private void block(String iD, int x, int y) throws RoomException {
+	private void block(String iD, int x, int y, float istn) throws RoomException {
 		Cell c = buildingLayout.get(iD).getCellXY(x, y);
-		c.setUnreachable();
+		c.setUnreachable(istn);
 	}
 
 	private void deflagrate(String iD, int x, int y, int r) throws RoomException {
@@ -509,11 +520,11 @@ public class Building implements Digestable{
 				"\tdeflagrate roomID x y [r] -                 set a cell and it's neightbours on fire, "+
 				"if r is set higher than 1, it will do it recursively r times"+System.lineSeparator()+
 				""+System.lineSeparator()+
-				"\tblock roomID x y -                          makes a cell unspreadable"+System.lineSeparator()+
+				"\tblock roomID x y [insulation] -             makes a cell unspreadable or insulated"+System.lineSeparator()+
 				""+System.lineSeparator()+
 				"\tunblock roomID x y -                        makes a cell spreadable"+System.lineSeparator()+
 				""+System.lineSeparator()+
-				"\tput roomID x y ignition -                   puts an inflamable object on the selected cell, the ignition point is the passed value per 100ºC"+System.lineSeparator()+
+				"\tput roomID x y ignition [insulation] -      puts an inflamable object on the selected cell, the ignition point is the passed value per 100ºC"+System.lineSeparator()+
 				""+System.lineSeparator()+
 				"\tclear roomID x y -                          resets a cell to the default empty state"+System.lineSeparator()+
 				""+System.lineSeparator()+
@@ -533,6 +544,7 @@ public class Building implements Digestable{
 				"\tignition -                                  Integer, if positive, sets the ignition point of a cell, if negative, defines how many iterations until the fire on that cell unsets"+System.lineSeparator()+
 				"\ttemperature -                               Temperature counters of the Cell, a fire generates 500 of them each iteration, a temperature counter is like 1ºC"+System.lineSeparator()+
 				"\tfilename -                                  The name of the target file to load or save the building data"+System.lineSeparator()+
+				"\tinsulation -                                Sets how much can the cell's temperature have an effect on it's environment or itself"+System.lineSeparator()+
 				""+System.lineSeparator()+
 				"OTHER INFO"+System.lineSeparator()+
 				"\trooms -                                     Rooms are shown as a 2D array of cells, the first cell (1,1) is the one at the bottom left"+System.lineSeparator()
