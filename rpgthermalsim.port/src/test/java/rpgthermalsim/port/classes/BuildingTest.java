@@ -13,7 +13,10 @@ import java.security.NoSuchAlgorithmException;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+
+import rpgthermalsim.port.exceptions.RoomException;
 
 public class BuildingTest {
 
@@ -152,6 +155,20 @@ public class BuildingTest {
 		caseC = b.digest();
 		assertTrue(caseA.compareTo(caseB)!=0);
 		assertTrue(caseB.compareTo(caseC)!=0);
+	}
+	
+	@Test
+	public final void temperatureMustConverge() throws NoSuchAlgorithmException, RoomException {
+		ps.println("build a 10 10");
+		ps.println("sink a 4 4 1000");
+		ps.println("iterate 10000");
+		ps.println("unsink a 4 4");
+		ps.println("iterate 10000");
+		ps.println("exit");
+		b.loop();
+		
+		assertTrue(b.buildingLayout.get("a").getCellXY(4, 4).temp_counters > 0 &&
+				b.buildingLayout.get("a").getCellXY(0, 0).temp_counters == b.buildingLayout.get("a").getCellXY(9, 9).temp_counters);
 	}
 
 }
