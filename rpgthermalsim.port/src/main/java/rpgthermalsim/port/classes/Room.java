@@ -66,10 +66,10 @@ public class Room implements Digestable{
 	}
 
 	public void iterate() {
-		for(int i = 0;i<w*h;i++) layout.get(i).spread();
-		for(int i = 0;i<w*h;i++) layout.get(i).commitStatus();
-		for(int i = 0;i<w*h;i++) layout.get(i).checkFlashpoint();
-		for(int i = 0;i<w*h;i++) layout.get(i).dissipateHeat();
+		for(int i = 0;i<layout.size();i++) layout.get(i).spread();
+		for(int i = 0;i<layout.size();i++) layout.get(i).commitStatus();
+		for(int i = 0;i<layout.size();i++) layout.get(i).checkFlashpoint();
+		for(int i = 0;i<layout.size();i++) layout.get(i).dissipateHeat();
 	}
 
 	public Cell getCellXY(int x, int y) throws RoomException {
