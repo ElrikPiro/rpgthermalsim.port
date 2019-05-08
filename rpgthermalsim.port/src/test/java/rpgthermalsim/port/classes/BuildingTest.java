@@ -157,6 +157,7 @@ public class BuildingTest {
 		assertTrue(caseB.compareTo(caseC)!=0);
 	}
 	
+	
 	@Test
 	public final void temperatureMustConverge() throws NoSuchAlgorithmException, RoomException {
 		ps.println("build a 10 10");
@@ -169,6 +170,46 @@ public class BuildingTest {
 		
 		assertTrue(b.buildingLayout.get("a").getCellXY(4, 4).temp_counters > 0 &&
 				b.buildingLayout.get("a").getCellXY(0, 0).temp_counters == b.buildingLayout.get("a").getCellXY(9, 9).temp_counters);
+	}
+	
+	@Test
+	public final void partialInsulationSlowsTemperatureTransfer() throws RoomException {
+		ps.println("build a 1 3");
+		ps.println("block a 0 1 0.1");
+		ps.println("set a 0 0 0 0 1000");
+		ps.println("iterate 1");
+		ps.println("exit");
+		b.loop();
+		assertTrue(b.buildingLayout.get("a").getCellXY(0, 1).temp_counters < 100);
+		
+	}
+	
+	@Test
+	public final void unblockingStopsInsulation() throws RoomException {
+		ps.println("build a 1 3");
+		ps.println("block a 0 1 0.1");
+		ps.println("set a 0 0 0 0 1000");
+		ps.println("iterate 1");
+		ps.println("set a 0 0 0 0 1000");
+		ps.println("set a 0 1 0 0 0");
+		ps.println("unblock a 0 1");
+		ps.println("iterate 1");
+		ps.println("exit");
+		b.loop();
+		
+		assertTrue(b.buildingLayout.get("a").getCellXY(0, 1).temp_counters > 100);
+	}
+	
+	@Test
+	public final void stoppingTheFireDestroysTheBlocking() throws RoomException {
+		ps.println("build a 1 3");
+		ps.println("put a 0 1 1 0.1");
+		ps.println("ignite a 0 1");
+		ps.println("iterate 11");
+		ps.println("exit");
+		b.loop();
+		
+		assertTrue(b.buildingLayout.get("a").getCellXY(0, 1).spreadable==1);
 	}
 
 }
