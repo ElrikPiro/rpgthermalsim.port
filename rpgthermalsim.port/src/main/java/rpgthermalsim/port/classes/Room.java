@@ -57,11 +57,23 @@ public class Room implements Digestable{
 		StringBuilder oss = new StringBuilder();
 		oss.append(this.desc + System.lineSeparator());
 		for(int ih = this.h-1;ih>=0;ih--) {
+			if(ih<10) oss.append("00"+ih);
+			else if(ih<100) oss.append("0"+ih);
+			else oss.append(ih);
 			for(int jw = 0 ; jw < this.w ; jw++) {
 				oss.append(this.layout.get(ih*this.w+jw).toString());
 			}
 			oss.append(System.lineSeparator());
 		}
+		oss.append("   ");
+		for(int jw = 0;jw < this.w ; jw++) {
+			oss.append(" ");
+			if(jw<10) oss.append("00"+jw);
+			else if(jw<100) oss.append("0"+jw);
+			else oss.append(jw);
+			oss.append(" ");
+		}
+		oss.append(System.lineSeparator());
 		return oss.toString();
 	}
 
