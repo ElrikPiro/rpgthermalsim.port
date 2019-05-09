@@ -194,7 +194,7 @@ public class CellTest {
 		return; //TODO: Esta opción dejará de ser usada en pos de un sistema de disipación posterior
 	}
 	
-	@Test
+	/*@Test
 	public final void testToString() {
 		underTest.setStatus(1, -1, 0);
 		StringBuilder stringBuilder = new StringBuilder();
@@ -236,7 +236,7 @@ public class CellTest {
 		stringBuilder.append("]");
 		assertTrue(underTest.toString().equals(stringBuilder.toString()));
 		
-	}
+	}*/
 
 	@Ignore
 	public final void testAddNeightbour() {

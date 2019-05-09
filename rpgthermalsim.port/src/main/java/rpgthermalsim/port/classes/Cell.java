@@ -15,6 +15,9 @@ public class Cell implements Digestable{
 	final char[] FIRE = {0x1b,'[','4','1','m','\0'};
 	final char[] HEAT = {0x1b,'[','1','0','0','m','\0'};
 	final char[] INFLAMMABLE = {0x1b,'[','4','4','m','\0'};
+	final char[] MAPPER1 = {0x1b,'[','4','8',';','5',';'};
+	final char[] MAPPER2 = {'m','\0'};
+	final int[] LERP = { 16, 17, 18, 19, 20, 21, 27, 26, 25, 24, 23, 22, 58, 94, 130, 166, 202, 203,204,205,206,207,201,200,199,198,197,196,160,124,88,52};
 	
 	int flame;
 	int ignition;
@@ -157,14 +160,23 @@ public class Cell implements Digestable{
 	
 	public String toString() {
 		StringBuilder oss = new StringBuilder();
+		int lerp = 0;
 		oss.append("[");
+		oss.append(MAPPER1);
+		if(this.temp_counters<=-273) lerp = 0;
+		else if(this.temp_counters > 500) lerp = LERP.length-1;
+		else {
+			float tempmap = (float) (this.temp_counters+273)/773;
+			lerp = (int) Math.floor(tempmap*(LERP.length-1));
+		}
+		oss.append(LERP[lerp]);
+		oss.append(MAPPER2);
 		if(this.flame==1) {
 			oss.append(FIRE);
 			oss.append(" * ");
 		}else if(!this.isSpreadable()) {
 			oss.append("###");
 		}else if(this.temp_counters>20) {
-			oss.append(HEAT);
 			if(this.temp_counters < 50) oss.append("   ");
 			else if(this.temp_counters < 100) oss.append(" "+this.temp_counters);
 			else if(this.temp_counters < 1000) oss.append(this.temp_counters);
