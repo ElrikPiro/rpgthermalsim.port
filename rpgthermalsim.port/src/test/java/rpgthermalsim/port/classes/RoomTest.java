@@ -26,7 +26,11 @@ public class RoomTest {
 
 	@Test
 	public final void testToString() throws RoomException {
-		assertNotNull(r.toString());
+		for(int i = 1; i<=101;i++) {
+			tearDown();
+			r = new Room(i,i,"");
+			assertNotNull(r.toString());
+		}
 	}
 
 	@Test

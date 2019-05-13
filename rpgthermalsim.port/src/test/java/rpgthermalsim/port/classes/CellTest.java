@@ -194,39 +194,30 @@ public class CellTest {
 		return; //TODO: Esta opción dejará de ser usada en pos de un sistema de disipación posterior
 	}
 	
-	/*@Test
+	@Test
 	public final void testToString() {
+		StringBuilder stringBuilder;
 		underTest.setStatus(1, -1, 0);
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("[");
-		stringBuilder.append(underTest.FIRE);
-		stringBuilder.append(" * ");
-		stringBuilder.append(underTest.RESET);
-		stringBuilder.append("]");
-		assertTrue(underTest.toString().equals(stringBuilder.toString()));
+		assertTrue(underTest.toString().contains(" * "));
 		
 		underTest.setStatus(0, 0, 0);
 		underTest.setUnreachable(0.0f);
-		stringBuilder = new StringBuilder();
-		stringBuilder.append("[###");
-		stringBuilder.append(underTest.RESET);
-		stringBuilder.append("]");
-		assertTrue(underTest.toString().equals(stringBuilder.toString()));
+		assertTrue(underTest.toString().contains("###"));
 		
 		underTest.setReachable();
 		for(int i = 32;i<10000000;i*=2) {
 			underTest.setStatus(0, 0, i);
-			assertTrue(i<50 && underTest.toString().charAt(10)==' ' ||
-					i>50 && i<1000 && underTest.toString().charAt(10)!=' ' ||
-					i>999 && i<100000 && underTest.toString().charAt(10)=='k' ||
-					i>99999 && i<1000000 && underTest.toString().charAt(10)=='M' ||
-					i>999999 && underTest.toString().charAt(10)=='*');
+			assertTrue(i<50 && underTest.toString().charAt(underTest.toString().indexOf("]")-underTest.RESET.length-1)==' ' ||
+					i>50 && i<1000 && underTest.toString().charAt(underTest.toString().indexOf("]")-underTest.RESET.length-1)!=' ' ||
+					i>999 && i<100000 && underTest.toString().charAt(underTest.toString().indexOf("]")-underTest.RESET.length-1)=='k' ||
+					i>99999 && i<1000000 && underTest.toString().charAt(underTest.toString().indexOf("]")-underTest.RESET.length-1)=='M' ||
+					i>999999 && underTest.toString().charAt(underTest.toString().indexOf("]")-underTest.RESET.length-1)=='*');
 		}
 		for(int i = 2;i<10000;i*=2) {
 			underTest.setStatus(0, i, 0);
-			assertTrue(i<10 && underTest.toString().charAt(9)==' ' ||
-					i>9 && i<1000 && underTest.toString().charAt(9)!=' ' ||
-					i>999 && underTest.toString().charAt(9)=='^');
+			assertTrue(i<10 && underTest.toString().charAt(underTest.toString().indexOf("]")-underTest.RESET.length-1)==' ' ||
+					i>9 && i<1000 && underTest.toString().charAt(underTest.toString().indexOf("]")-underTest.RESET.length-1)!=' ' ||
+					i>999 && underTest.toString().charAt(underTest.toString().indexOf("]")-underTest.RESET.length-1)=='^');
 		}
 		
 		underTest.setStatus(0, 0, 0);
@@ -234,9 +225,9 @@ public class CellTest {
 		stringBuilder.append("[   ");
 		stringBuilder.append(underTest.RESET);
 		stringBuilder.append("]");
-		assertTrue(underTest.toString().equals(stringBuilder.toString()));
+		assertTrue(underTest.toString().contains("   "));
 		
-	}*/
+	}
 
 	@Ignore
 	public final void testAddNeightbour() {
