@@ -6,6 +6,14 @@ import java.util.ArrayList;
 import rpgthermalsim.port.exceptions.CellException;
 import rpgthermalsim.port.exceptions.RoomException;
 
+/**
+ * 
+ * Creates and manages a set of related cells that can be represented in a grid.
+ * 
+ * @author David Baselga
+ * @since 0.1
+ *
+ */
 public class Room implements Digestable{
 	ArrayList<Cell> layout;
 	int w,h;

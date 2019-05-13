@@ -10,6 +10,14 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import rpgthermalsim.port.exceptions.CellException;
 
+
+/**
+ * 
+ * Unitary agent that manages it's own status based on the status of it's neightbours.
+ * 
+ * @author David Baselga
+ * @since 0.1
+ */
 public class Cell implements Digestable{
 	final char[] RESET = {0x1b,'[','3','9',';','4','9','m','\0'};
 	final char[] FIRE = {0x1b,'[','4','1','m','\0'};

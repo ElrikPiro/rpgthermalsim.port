@@ -11,6 +11,14 @@ import rpgthermalsim.port.exceptions.RoomException;
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
 
+
+/**
+ * 
+ * Builder and loop class for managing the data structure of the instance.
+ * 
+ * @author David Baselga
+ * @since 0.1
+ */
 public class Building implements Digestable{
 	
 	final public static char CLEAR[] = {0x1b,'[','2','J','\0'};

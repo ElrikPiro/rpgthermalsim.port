@@ -6,8 +6,12 @@ package rpgthermalsim.port.classes;
 import rpgthermalsim.port.exceptions.CellException;
 
 /**
- * @author dabama1
- *
+ * 
+ * This cell has a fixed temperature and can be useful to represent the effect of a
+ * constant source of heat or, for example, a window pointing outside.
+ * 
+ * @author David Baselga
+ * @since 1.1
  */
 public class FixedTempCell extends Cell {
 
