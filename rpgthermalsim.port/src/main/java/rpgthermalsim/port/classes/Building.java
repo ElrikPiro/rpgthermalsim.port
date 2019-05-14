@@ -9,8 +9,17 @@ import rpgthermalsim.port.exceptions.BuildingException;
 import rpgthermalsim.port.exceptions.RoomException;
 
 import java.io.*;
+import java.security.NoSuchAlgorithmException;
 
-public class Building {
+
+/**
+ * 
+ * Builder and loop class for managing the data structure of the instance.
+ * 
+ * @author David Baselga
+ * @since 0.1
+ */
+public class Building implements Digestable{
 	
 	final public static char CLEAR[] = {0x1b,'[','2','J','\0'};
 	public int iteration = 0;
@@ -21,6 +30,12 @@ public class Building {
 	protected String file;
 	private Scanner teclado;
 	
+	/**
+	 * Default Class constructor
+	 * 
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	public Building() {
 		ref = new Layout();
 		buildingLayout = new Layout();
@@ -31,6 +46,14 @@ public class Building {
 		teclado = new Scanner(System.in);
 	}
 	
+	/**
+	 * Class constructor that reads commands from a file, if the file has errors, those will be shown on
+	 * stdout
+	 * 
+	 * @param file File to load the building from.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	public Building(String string) {
 		ref = new Layout();
 		buildingLayout = new Layout();
@@ -68,6 +91,15 @@ public class Building {
 		return;
 	}
 
+	/**
+	 * Runs the passed parameter as a command
+	 * 
+	 * @param line String containing the parameter to parse and run.
+	 * @throws BuildngException When the input is not properly formatted
+	 * @throws RoomExceptien When tries to access a cell that does not exists
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void _command(String line) throws BuildingException, IOException, RoomException{
 		String command;
 		String[] args;
@@ -77,7 +109,9 @@ public class Building {
 		Integer flame = new Integer(0);
 		Integer ignition = new Integer(0);
 		Integer temperature  = new Integer(0);
-		
+		Iterator<Cell> it;
+		Cell c;
+		float istn = 0;
 		
 		args = line.split(" ");
 		command = args[0];
@@ -216,7 +250,12 @@ public class Building {
 				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
 				if(x < 0 || y < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
 				
-				block(ID,x,y);
+				if(args.length>4) {
+					istn = Float.parseFloat(args[4]);
+					if(istn >1.0f || istn<0.0f) throw new BuildingException("insulation must be between 0 and 1.");
+				}
+				
+				block(ID,x,y,istn);
 				puts.add(line);
 				return;
 			case "unblock":
@@ -242,6 +281,12 @@ public class Building {
 				
 				ignition = new Integer(Integer.parseInt(args[4]));
 				if(ignition < 0) throw new BuildingException("ignition value must be zero or positive numbers.");
+				
+				if(args.length>5) {
+					istn = Float.parseFloat(args[5]);
+					if(istn >1.0f || istn<0.0f) throw new BuildingException("insulation must be between 0 and 1.");
+					block(ID,x,y,istn);
+				}
 				
 				setCell(ID,x,y,0,ignition.intValue(),0);
 				puts.add(line);
@@ -269,11 +314,53 @@ public class Building {
 			case "reset":
 				reset();
 				return;
+			case "sink":
+				if(args.length<5) throw new BuildingException("sink command requires at least 5 parameters.");
+				
+				ID = args[1];
+				if(!this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" does not exist.");
+				
+				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
+				if(x < 0 || y < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				
+				c = new FixedTempCell(Integer.parseInt(args[4]));
+				this.buildingLayout.get(ID).layout.add(c);
+				this.buildingLayout.get(ID).getCellXY(x, y).linkCells(c);
+				
+				puts.add(line);
+				return;
+			case "unsink":
+				if(args.length<4) throw new BuildingException("unsink command requires at least 4 parameters.");
+				
+				ID = args[1];
+				if(!this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" does not exist.");
+				
+				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
+				if(x < 0 || y < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				
+				it = this.buildingLayout.get(ID).getCellXY(x, y).getNeightbourhood().iterator();
+				
+				while(it.hasNext()) {
+					c = it.next();
+					if(c.getClass() == FixedTempCell.class) {
+						this.buildingLayout.get(ID).getCellXY(x, y).getNeightbourhood().remove(c);
+						this.buildingLayout.get(ID).layout.remove(c);
+						break;
+					}
+				}
+				puts.add(line);
+				return;
 			default:
 				throw new BuildingException("Command "+command+" not supported.");
 		}
 	}
 
+	/**
+	 * Resets the object to an empty state and calls the garbage collector.
+	 * 
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void reset() {
 		buildingLayout.clear();
 		ref.clear();
@@ -284,10 +371,25 @@ public class Building {
 		System.gc();
 	}
 
+	/**
+	 * Reloads a previously saved building from a file
+	 * 
+	 * @throws IOException file does not exist or building never set a file before.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void load() throws IOException {
 		load(file);
 	}
 
+	/**
+	 * Loads a building from a file
+	 * 
+	 * @param string File to load the building from.
+	 * @throws IOException file does not exist.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void load(String string) throws IOException {
 		FileReader readfile = new FileReader(string);
 		BufferedReader bf = new BufferedReader(readfile);
@@ -318,10 +420,25 @@ public class Building {
 		return;
 	}
 
+	/**
+	 * Saves a building into a file
+	 * 
+	 * @throws IOException file does not exist or never specified before.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void save() throws IOException{
 		save(file);
 	}
 
+	/**
+	 * Saves a building into a file
+	 * 
+	 * @param string File to save the building into.
+	 * @throws IOException can't write into file.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	@SuppressWarnings("unchecked")
 	private void save(String string) throws IOException{
 		FileWriter fw = new FileWriter(string);
@@ -345,22 +462,62 @@ public class Building {
 		return;
 	}
 
+	/**
+	 * Set a cell as reachable
+	 * 
+	 * @param iD Room Id.
+	 * @param x Cell x position
+	 * @param y Cell y position
+	 * @throws RoomException Referenced cell does not exist.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void unblock(String iD, int x, int y) throws RoomException {
 		Cell c = buildingLayout.get(iD).getCellXY(x, y);
 		c.setReachable();
 	}
 
-	private void block(String iD, int x, int y) throws RoomException {
+	/**
+	 * Set a cell as unreachable and gives it a insulation value
+	 * 
+	 * @param iD Room Id.
+	 * @param x Cell x position
+	 * @param y Cell y position
+	 * @param istn Insulation value 0.0 means totally insulated, 1.0 means no insulation at all.
+	 * @throws RoomException Referenced cell does not exist.
+	 * @author David Baselga
+	 * @since 1.1
+	 */
+	private void block(String iD, int x, int y, float istn) throws RoomException {
 		Cell c = buildingLayout.get(iD).getCellXY(x, y);
-		c.setUnreachable();
+		c.setUnreachable(istn);
 	}
 
+	/**
+	 * Simulates a gas deflagration iterating recursively within all cell neighbours
+	 * 
+	 * @param iD Room Id.
+	 * @param x Cell x position
+	 * @param y Cell y position
+	 * @param r number of recursive iterations
+	 * @throws RoomException Referenced cell does not exist.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void deflagrate(String iD, int x, int y, int r) throws RoomException {
 		Cell c = buildingLayout.get(iD).getCellXY(x, y);
 		_ignite(c);
 		_deflagrate(c,r);
 	}
 
+	/**
+	 * Recursive algorithm to perform the deflagrate command. Related to {@link #deflagrate(String, int, int, int)}
+	 * 
+	 * @param c Cell to deflagrate
+	 * @param r number of recursive iterations
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void _deflagrate(Cell c, int r) {
 		Set<Cell> nhood = c.getNeightbourhood();
 		Iterator<Cell> it = nhood.iterator();
@@ -372,15 +529,38 @@ public class Building {
 		}
 	}
 
+	/**
+	 * Ignites a cell
+	 * 
+	 * @param iD Room Id.
+	 * @param x Cell x position
+	 * @param y Cell y position
+	 * @throws RoomException Referenced cell does not exist.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void ignite(String iD, int x, int y) throws RoomException {
 		Cell c = buildingLayout.get(iD).getCellXY(x, y);
 		_ignite(c);
 	}
 
+	/**
+	 * Ignites a cell
+	 * 
+	 * @param c Cell to ignite
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void _ignite(Cell c) {
 		c.ignite();
 	}
 
+	/**
+	 * Lists all created rooms
+	 * 
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void listRooms() {
 		String name;
 		Room r;
@@ -392,19 +572,65 @@ public class Building {
 		}
 	}
 
+	/**
+	 * Links two cells in order to share temperature
+	 * 
+	 * @param iD1 Room Id for first cell.
+	 * @param w1 first Cell x position
+	 * @param h1 first Cell y position
+	 * @param iD2 Room Id for second cell.
+	 * @param w2 second Cell x position
+	 * @param h2 second Cell y position
+	 * @throws RoomException Referenced cell does not exist.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void linkCells(String iD1, int w1, int h1, String iD2, int w2, int h2) throws RoomException {
 		buildingLayout.get(iD1).getCellXY(w1, h1).linkCells(buildingLayout.get(iD2).getCellXY(w2, h2));
 	}
 
+	/**
+	 * Forces to set the status of a cell
+	 * 
+	 * @param iD1 Room Id for first cell.
+	 * @param w1 first Cell x position
+	 * @param h1 first Cell y position
+	 * @param integer1 Value for flame status.
+	 * @param integer2 Value for ignition status.
+	 * @param integer3 Value for temperature.
+	 * @throws RoomException Referenced cell does not exist.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void setCell(String iD, int w, int h, Integer integer, Integer integer2, Integer integer3) throws RoomException {
 		buildingLayout.get(iD).getCellXY(w,h).setStatus(integer.intValue(),integer2.intValue(),integer3.intValue());
 	}
 
+	/**
+	 * Creates a new Room and adds it to the building layout.
+	 * 
+	 * @param iD1 Room Id for first cell.
+	 * @param w1 first Cell x position
+	 * @param h1 first Cell y position
+	 * @param iD2 Room Id for second cell.
+	 * @param w2 second Cell x position
+	 * @param h2 second Cell y position
+	 * @throws RoomException Referenced cell does not exist.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void newRoom(String iD, int w, int h, String desc) {
 		Room r = new Room(w,h,desc);
 		buildingLayout.put(iD, r);
 	}
 
+	/**
+	 * Iterates n times, having the cells from every room calculate it's statuses.
+	 * 
+	 * @param n number of iterations executed.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void iterate(int parseInt) {
 		Set<String> lay = buildingLayout.keySet();
 		Iterator<String> it;
@@ -418,10 +644,22 @@ public class Building {
 		}
 	}
 
+	/**
+	 * Equivalent to {@link #iterate(int)}
+	 * 
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void iterate() {
 		iterate(1);
 	}
 
+	/**
+	 * Runs an input loop that executes {@link #command()} until it returns an exit code.
+	 * 
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	public void loop() {
 		refresh(ref);
 		int h = 0;
@@ -431,6 +669,13 @@ public class Building {
 			
 	}
 
+	/**
+	 * Prompts an input line from System.in, passes it to {@link #_command(String)} and handles thrown exceptions.
+	 * 
+	 * @author David Baselga
+	 * @since 0.1
+	 * @return 0 if it must continue operating, -1 if it reaches an exit condition.
+	 */
 	private int command() {
 		String input;
 		System.out.print("command> ");
@@ -449,6 +694,12 @@ public class Building {
 		return 0;
 	}
 
+	/**
+	 * Prints the command help on stdout
+	 * 
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void help() {
 		System.out.println(
 				"\trefresh [roomID [roomID [(...)}]] -         cleans the screen and shows all created rooms, "+
@@ -470,11 +721,11 @@ public class Building {
 				"\tdeflagrate roomID x y [r] -                 set a cell and it's neightbours on fire, "+
 				"if r is set higher than 1, it will do it recursively r times"+System.lineSeparator()+
 				""+System.lineSeparator()+
-				"\tblock roomID x y -                          makes a cell unspreadable"+System.lineSeparator()+
+				"\tblock roomID x y [insulation] -             makes a cell unspreadable or insulated"+System.lineSeparator()+
 				""+System.lineSeparator()+
 				"\tunblock roomID x y -                        makes a cell spreadable"+System.lineSeparator()+
 				""+System.lineSeparator()+
-				"\tput roomID x y ignition -                   puts an inflamable object on the selected cell, the ignition point is the passed value per 100ºC"+System.lineSeparator()+
+				"\tput roomID x y ignition [insulation] -      puts an inflamable object on the selected cell, the ignition point is the passed value per 100ºC"+System.lineSeparator()+
 				""+System.lineSeparator()+
 				"\tclear roomID x y -                          resets a cell to the default empty state"+System.lineSeparator()+
 				""+System.lineSeparator()+
@@ -483,6 +734,10 @@ public class Building {
 				"\tload [filename] -                           Loads the building layout from the specified file, if no file is specified loads it from the last file red or saved"+System.lineSeparator()+
 				""+System.lineSeparator()+
 				"\treset -                                     Deletes all rooms and resets the iteration counter"+System.lineSeparator()+
+				""+System.lineSeparator()+
+				"\tsink roomID x y temperature -               Creates a fixed temperature sink and links it to given cell"+System.lineSeparator()+
+				""+System.lineSeparator()+
+				"\tunsink roomID x y -                         Removes fixed temperature sink from the given cell"+System.lineSeparator()+
 				"Note that blank spaces will act as a separator."+System.lineSeparator()+
 				"GLOSSARY"+System.lineSeparator()+
 				"\troomID -                                    Alphanumeric, no spaces, its the reference for a room"+System.lineSeparator()+
@@ -490,6 +745,7 @@ public class Building {
 				"\tignition -                                  Integer, if positive, sets the ignition point of a cell, if negative, defines how many iterations until the fire on that cell unsets"+System.lineSeparator()+
 				"\ttemperature -                               Temperature counters of the Cell, a fire generates 500 of them each iteration, a temperature counter is like 1ºC"+System.lineSeparator()+
 				"\tfilename -                                  The name of the target file to load or save the building data"+System.lineSeparator()+
+				"\tinsulation -                                Sets how much can the cell's temperature have an effect on it's environment or itself"+System.lineSeparator()+
 				""+System.lineSeparator()+
 				"OTHER INFO"+System.lineSeparator()+
 				"\trooms -                                     Rooms are shown as a 2D array of cells, the first cell (1,1) is the one at the bottom left"+System.lineSeparator()
@@ -497,6 +753,13 @@ public class Building {
 		
 	}
 
+	/**
+	 * Renders the list of rooms passed by parameter.
+	 * 
+	 * @param ref2 {@link Layout} containing the set of rooms to render.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void refresh(Layout ref2) {
 		System.out.print(CLEAR);
 		System.out.println("Iteration: "+this.iteration);
@@ -506,6 +769,46 @@ public class Building {
 			System.out.print("CODE: <" + key + ">" + System.lineSeparator() + ref2.get(key).toString());
 		}
 		
+	}
+
+	/**
+	 * @author David Baselga
+	 * @since 1.1
+	 */
+	@Override
+	public String digest() throws NoSuchAlgorithmException {
+		StringBuilder oss = new StringBuilder();
+		Iterator<String> keys;
+		String key;
+		oss.append(iteration);
+		
+		keys = buildingLayout.keySet().iterator();
+		while(keys.hasNext()) {
+			key = keys.next();
+			oss.append(buildingLayout.get(key).digest());
+		}
+		
+		keys = ref.keySet().iterator();
+		while(keys.hasNext()) {
+			key = keys.next();
+			oss.append(ref.get(key).digest());
+		}
+		
+		for(int i = 0;i<builds.size();i++) {
+			oss.append(builds.get(i));
+		}
+		
+		for(int i = 0;i<puts.size();i++) {
+			oss.append(puts.get(i));
+		}
+		
+		for(int i = 0;i<links.size();i++) {
+			oss.append(links.get(i));
+		}
+		
+		oss.append(file);
+		
+		return digest(oss.toString());
 	}
 
 }

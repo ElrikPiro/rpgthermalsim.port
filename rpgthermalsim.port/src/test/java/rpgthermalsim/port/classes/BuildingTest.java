@@ -9,10 +9,14 @@ import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
+import java.security.NoSuchAlgorithmException;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+
+import rpgthermalsim.port.exceptions.RoomException;
 
 public class BuildingTest {
 
@@ -120,6 +124,92 @@ public class BuildingTest {
 		b = null;
 		System.setIn(aux);
 		b = new Building("test.txt");
+	}
+	
+	@Test
+	public final void sameBuildingSameDigest() throws NoSuchAlgorithmException {
+		String caseA, caseB;
+		
+		ps.println("build A 5 5");
+		ps.println("exit");
+		b.loop();
+		caseA = b.digest();
+		caseB = b.digest();
+		assertTrue(caseA.compareTo(caseB)==0);
+	}
+	
+	@Test
+	public final void differentBuildingDifferentDigest() throws NoSuchAlgorithmException {
+		String caseA, caseB, caseC;
+		ps.println("build A 5 5");
+		ps.println("exit");
+		b.loop();
+		caseA = b.digest();
+		ps.println("put A 4 4 1");
+		ps.println("exit");
+		b.loop();
+		caseB = b.digest();
+		ps.println("link A 4 4 A 0 0");
+		ps.println("exit");
+		b.loop();
+		caseC = b.digest();
+		assertTrue(caseA.compareTo(caseB)!=0);
+		assertTrue(caseB.compareTo(caseC)!=0);
+	}
+	
+	
+	@Test
+	public final void temperatureMustConverge() throws NoSuchAlgorithmException, RoomException {
+		ps.println("build a 10 10");
+		ps.println("sink a 4 4 1000");
+		ps.println("iterate 10000");
+		ps.println("unsink a 4 4");
+		ps.println("iterate 10000");
+		ps.println("exit");
+		b.loop();
+		
+		assertTrue((int) b.buildingLayout.get("a").getCellXY(4, 4).temp_counters > 0 &&
+				(int) b.buildingLayout.get("a").getCellXY(0, 0).temp_counters == (int) b.buildingLayout.get("a").getCellXY(9, 9).temp_counters);
+	}
+	
+	@Test
+	public final void partialInsulationSlowsTemperatureTransfer() throws RoomException {
+		ps.println("build a 1 3");
+		ps.println("block a 0 1 0.1");
+		ps.println("set a 0 0 0 0 1000");
+		ps.println("iterate 1");
+		ps.println("exit");
+		b.loop();
+		assertTrue(b.buildingLayout.get("a").getCellXY(0, 1).temp_counters < 100);
+		
+	}
+	
+	@Test
+	public final void unblockingStopsInsulation() throws RoomException {
+		ps.println("build a 1 3");
+		ps.println("block a 0 1 0.1");
+		ps.println("set a 0 0 0 0 1000");
+		ps.println("iterate 1");
+		ps.println("set a 0 0 0 0 1000");
+		ps.println("set a 0 1 0 0 0");
+		ps.println("unblock a 0 1");
+		ps.println("iterate 1");
+		ps.println("exit");
+		b.loop();
+		
+		assertTrue(b.buildingLayout.get("a").getCellXY(0, 1).temp_counters > 100);
+	}
+	
+	@Test
+	public final void stoppingTheFireDestroysTheBlocking() throws RoomException {
+		ps.println("build a 1 3");
+		ps.println("put a 0 1 1 0.1");
+		ps.println("ignite a 0 1");
+		ps.println("iterate 11");
+		ps.println("exit");
+		b.loop();
+		
+		assertTrue(b.buildingLayout.get("a").getCellXY(0, 1).spreadable==1);
 	}
 
 }
