@@ -6,11 +6,28 @@ import java.util.ArrayList;
 import rpgthermalsim.port.exceptions.CellException;
 import rpgthermalsim.port.exceptions.RoomException;
 
+/**
+ * 
+ * Creates and manages a set of related cells that can be represented in a grid.
+ * 
+ * @author David Baselga
+ * @since 0.1
+ *
+ */
 public class Room implements Digestable{
 	ArrayList<Cell> layout;
 	int w,h;
 	private String desc;
 
+	/**
+	 * 
+	 * Builds a room with the defined width and height and assigns it a description. The room will contain
+	 * width*height Cells linked with their neightbours.
+	 * 
+	 * @param w room's width
+	 * @param h room's height
+	 * @param desc room's description
+	 */
 	public Room(int w, int h, String desc) {
 		layout = new ArrayList<Cell>();
 		this.w = w;
@@ -26,6 +43,9 @@ public class Room implements Digestable{
 		setNeigthbours();
 	}
 
+	/**
+	 * For every Cell in the room, that cell is linked to it's neighbouring cells.
+	 */
 	private void setNeigthbours() {
 		for(int i = 0; i < w*h; i++) {
 			int jw = (i%w);
@@ -77,6 +97,9 @@ public class Room implements Digestable{
 		return oss.toString();
 	}
 
+	/**
+	 * Runs on each cell every step of the iteration process.
+	 */
 	public void iterate() {
 		for(int i = 0;i<layout.size();i++) layout.get(i).spread();
 		for(int i = 0;i<layout.size();i++) layout.get(i).commitStatus();
@@ -84,15 +107,32 @@ public class Room implements Digestable{
 		for(int i = 0;i<layout.size();i++) layout.get(i).dissipateHeat();
 	}
 
+	/**
+	 * 
+	 * Gets the specified Cell
+	 * 
+	 * @param x x-axis coordinate of the cell
+	 * @param y y-axis coordinate of the cell
+	 * @return A Cell object reference
+	 * @throws RoomException when the Cell does not exist.
+	 */
 	public Cell getCellXY(int x, int y) throws RoomException {
 		if(x >= w || y >= h || x < 0 || y < 0) throw new RoomException("The requested cell does not exist.");
 		return layout.get(w*y+x);
 	}
 
+	/**
+	 * Getter for description.
+	 * 
+	 * @return description of the room.
+	 */
 	public String getDesc() {
 		return this.desc;
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public String digest() throws NoSuchAlgorithmException {
 		StringBuilder oss = new StringBuilder();

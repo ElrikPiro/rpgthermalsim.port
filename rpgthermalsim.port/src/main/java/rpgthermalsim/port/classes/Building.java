@@ -11,6 +11,14 @@ import rpgthermalsim.port.exceptions.RoomException;
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
 
+
+/**
+ * 
+ * Builder and loop class for managing the data structure of the instance.
+ * 
+ * @author David Baselga
+ * @since 0.1
+ */
 public class Building implements Digestable{
 	
 	final public static char CLEAR[] = {0x1b,'[','2','J','\0'};
@@ -22,6 +30,12 @@ public class Building implements Digestable{
 	protected String file;
 	private Scanner teclado;
 	
+	/**
+	 * Default Class constructor
+	 * 
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	public Building() {
 		ref = new Layout();
 		buildingLayout = new Layout();
@@ -32,6 +46,14 @@ public class Building implements Digestable{
 		teclado = new Scanner(System.in);
 	}
 	
+	/**
+	 * Class constructor that reads commands from a file, if the file has errors, those will be shown on
+	 * stdout
+	 * 
+	 * @param file File to load the building from.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	public Building(String string) {
 		ref = new Layout();
 		buildingLayout = new Layout();
@@ -69,6 +91,15 @@ public class Building implements Digestable{
 		return;
 	}
 
+	/**
+	 * Runs the passed parameter as a command
+	 * 
+	 * @param line String containing the parameter to parse and run.
+	 * @throws BuildngException When the input is not properly formatted
+	 * @throws RoomExceptien When tries to access a cell that does not exists
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void _command(String line) throws BuildingException, IOException, RoomException{
 		String command;
 		String[] args;
@@ -324,6 +355,12 @@ public class Building implements Digestable{
 		}
 	}
 
+	/**
+	 * Resets the object to an empty state and calls the garbage collector.
+	 * 
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void reset() {
 		buildingLayout.clear();
 		ref.clear();
@@ -334,10 +371,25 @@ public class Building implements Digestable{
 		System.gc();
 	}
 
+	/**
+	 * Reloads a previously saved building from a file
+	 * 
+	 * @throws IOException file does not exist or building never set a file before.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void load() throws IOException {
 		load(file);
 	}
 
+	/**
+	 * Loads a building from a file
+	 * 
+	 * @param string File to load the building from.
+	 * @throws IOException file does not exist.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void load(String string) throws IOException {
 		FileReader readfile = new FileReader(string);
 		BufferedReader bf = new BufferedReader(readfile);
@@ -368,10 +420,25 @@ public class Building implements Digestable{
 		return;
 	}
 
+	/**
+	 * Saves a building into a file
+	 * 
+	 * @throws IOException file does not exist or never specified before.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void save() throws IOException{
 		save(file);
 	}
 
+	/**
+	 * Saves a building into a file
+	 * 
+	 * @param string File to save the building into.
+	 * @throws IOException can't write into file.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	@SuppressWarnings("unchecked")
 	private void save(String string) throws IOException{
 		FileWriter fw = new FileWriter(string);
@@ -395,22 +462,62 @@ public class Building implements Digestable{
 		return;
 	}
 
+	/**
+	 * Set a cell as reachable
+	 * 
+	 * @param iD Room Id.
+	 * @param x Cell x position
+	 * @param y Cell y position
+	 * @throws RoomException Referenced cell does not exist.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void unblock(String iD, int x, int y) throws RoomException {
 		Cell c = buildingLayout.get(iD).getCellXY(x, y);
 		c.setReachable();
 	}
 
+	/**
+	 * Set a cell as unreachable and gives it a insulation value
+	 * 
+	 * @param iD Room Id.
+	 * @param x Cell x position
+	 * @param y Cell y position
+	 * @param istn Insulation value 0.0 means totally insulated, 1.0 means no insulation at all.
+	 * @throws RoomException Referenced cell does not exist.
+	 * @author David Baselga
+	 * @since 1.1
+	 */
 	private void block(String iD, int x, int y, float istn) throws RoomException {
 		Cell c = buildingLayout.get(iD).getCellXY(x, y);
 		c.setUnreachable(istn);
 	}
 
+	/**
+	 * Simulates a gas deflagration iterating recursively within all cell neighbours
+	 * 
+	 * @param iD Room Id.
+	 * @param x Cell x position
+	 * @param y Cell y position
+	 * @param r number of recursive iterations
+	 * @throws RoomException Referenced cell does not exist.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void deflagrate(String iD, int x, int y, int r) throws RoomException {
 		Cell c = buildingLayout.get(iD).getCellXY(x, y);
 		_ignite(c);
 		_deflagrate(c,r);
 	}
 
+	/**
+	 * Recursive algorithm to perform the deflagrate command. Related to {@link #deflagrate(String, int, int, int)}
+	 * 
+	 * @param c Cell to deflagrate
+	 * @param r number of recursive iterations
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void _deflagrate(Cell c, int r) {
 		Set<Cell> nhood = c.getNeightbourhood();
 		Iterator<Cell> it = nhood.iterator();
@@ -422,15 +529,38 @@ public class Building implements Digestable{
 		}
 	}
 
+	/**
+	 * Ignites a cell
+	 * 
+	 * @param iD Room Id.
+	 * @param x Cell x position
+	 * @param y Cell y position
+	 * @throws RoomException Referenced cell does not exist.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void ignite(String iD, int x, int y) throws RoomException {
 		Cell c = buildingLayout.get(iD).getCellXY(x, y);
 		_ignite(c);
 	}
 
+	/**
+	 * Ignites a cell
+	 * 
+	 * @param c Cell to ignite
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void _ignite(Cell c) {
 		c.ignite();
 	}
 
+	/**
+	 * Lists all created rooms
+	 * 
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void listRooms() {
 		String name;
 		Room r;
@@ -442,19 +572,65 @@ public class Building implements Digestable{
 		}
 	}
 
+	/**
+	 * Links two cells in order to share temperature
+	 * 
+	 * @param iD1 Room Id for first cell.
+	 * @param w1 first Cell x position
+	 * @param h1 first Cell y position
+	 * @param iD2 Room Id for second cell.
+	 * @param w2 second Cell x position
+	 * @param h2 second Cell y position
+	 * @throws RoomException Referenced cell does not exist.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void linkCells(String iD1, int w1, int h1, String iD2, int w2, int h2) throws RoomException {
 		buildingLayout.get(iD1).getCellXY(w1, h1).linkCells(buildingLayout.get(iD2).getCellXY(w2, h2));
 	}
 
+	/**
+	 * Forces to set the status of a cell
+	 * 
+	 * @param iD1 Room Id for first cell.
+	 * @param w1 first Cell x position
+	 * @param h1 first Cell y position
+	 * @param integer1 Value for flame status.
+	 * @param integer2 Value for ignition status.
+	 * @param integer3 Value for temperature.
+	 * @throws RoomException Referenced cell does not exist.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void setCell(String iD, int w, int h, Integer integer, Integer integer2, Integer integer3) throws RoomException {
 		buildingLayout.get(iD).getCellXY(w,h).setStatus(integer.intValue(),integer2.intValue(),integer3.intValue());
 	}
 
+	/**
+	 * Creates a new Room and adds it to the building layout.
+	 * 
+	 * @param iD1 Room Id for first cell.
+	 * @param w1 first Cell x position
+	 * @param h1 first Cell y position
+	 * @param iD2 Room Id for second cell.
+	 * @param w2 second Cell x position
+	 * @param h2 second Cell y position
+	 * @throws RoomException Referenced cell does not exist.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void newRoom(String iD, int w, int h, String desc) {
 		Room r = new Room(w,h,desc);
 		buildingLayout.put(iD, r);
 	}
 
+	/**
+	 * Iterates n times, having the cells from every room calculate it's statuses.
+	 * 
+	 * @param n number of iterations executed.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void iterate(int parseInt) {
 		Set<String> lay = buildingLayout.keySet();
 		Iterator<String> it;
@@ -468,10 +644,22 @@ public class Building implements Digestable{
 		}
 	}
 
+	/**
+	 * Equivalent to {@link #iterate(int)}
+	 * 
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void iterate() {
 		iterate(1);
 	}
 
+	/**
+	 * Runs an input loop that executes {@link #command()} until it returns an exit code.
+	 * 
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	public void loop() {
 		refresh(ref);
 		int h = 0;
@@ -481,6 +669,13 @@ public class Building implements Digestable{
 			
 	}
 
+	/**
+	 * Prompts an input line from System.in, passes it to {@link #_command(String)} and handles thrown exceptions.
+	 * 
+	 * @author David Baselga
+	 * @since 0.1
+	 * @return 0 if it must continue operating, -1 if it reaches an exit condition.
+	 */
 	private int command() {
 		String input;
 		System.out.print("command> ");
@@ -499,6 +694,12 @@ public class Building implements Digestable{
 		return 0;
 	}
 
+	/**
+	 * Prints the command help on stdout
+	 * 
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void help() {
 		System.out.println(
 				"\trefresh [roomID [roomID [(...)}]] -         cleans the screen and shows all created rooms, "+
@@ -552,6 +753,13 @@ public class Building implements Digestable{
 		
 	}
 
+	/**
+	 * Renders the list of rooms passed by parameter.
+	 * 
+	 * @param ref2 {@link Layout} containing the set of rooms to render.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void refresh(Layout ref2) {
 		System.out.print(CLEAR);
 		System.out.println("Iteration: "+this.iteration);
@@ -563,6 +771,10 @@ public class Building implements Digestable{
 		
 	}
 
+	/**
+	 * @author David Baselga
+	 * @since 1.1
+	 */
 	@Override
 	public String digest() throws NoSuchAlgorithmException {
 		StringBuilder oss = new StringBuilder();
