@@ -138,7 +138,7 @@ public class CellTest {
 		System.out.println(numneighbours);
 		System.out.println(-underTest.aux_counters);
 		System.out.println(underTest.temp_counters/(numneighbours+1));
-		assertTrue(((-underTest.aux_counters) + underTest.temp_counters/(numneighbours+1)) == 1000);
+		assertTrue((int)((-underTest.aux_counters) + underTest.temp_counters/(numneighbours+1)) == 1000);
 		underTest.aux_counters = 0;
 	}
 	

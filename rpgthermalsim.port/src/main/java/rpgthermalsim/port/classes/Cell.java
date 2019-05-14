@@ -29,10 +29,10 @@ public class Cell implements Digestable{
 	
 	int flame;
 	int ignition;
-	int temp_counters;
+	float temp_counters;
 	int spreadable; //boolean
 
-	int aux_counters = 0;
+	float aux_counters = 0;
 	float insulation = 1.0f; //by default perfect heat conductivity is assumed
 
 	HashSet<Cell> neightbours;
@@ -76,14 +76,14 @@ public class Cell implements Digestable{
 	 * 
 	 * @param intValue defines if the cell is ignited
 	 * @param intValue2 defines ignition temperature and iterations left until set off
-	 * @param intValue3 defines cell temperature
+	 * @param tc defines cell temperature
 	 * @author David Baselga
 	 * @since 0.1
 	 */
-	public void setStatus(int intValue, int intValue2, int intValue3) {
+	public void setStatus(int intValue, int intValue2, float tc) {
 		flame = intValue;
 		ignition = intValue2;
-		temp_counters = intValue3;
+		temp_counters = tc;
 	}
 
 	/**
@@ -170,7 +170,7 @@ public class Cell implements Digestable{
 	public void spread() {
 		//if(!isSpreadable()) return;
 		float accumulate = temp_counters;
-		int avg = 0;
+		float avg = 0;
 		float flanders = 1.0f;
 		Iterator<Cell> it = this.neightbours.iterator();
 		while(it.hasNext()) {
@@ -179,7 +179,7 @@ public class Cell implements Digestable{
 			flanders+=c.insulation*this.insulation;
 		}
 		
-		avg = (int) (accumulate/flanders);
+		avg = (accumulate/flanders);
 		addCounters(avg-temp_counters);
 	}
 
@@ -190,7 +190,7 @@ public class Cell implements Digestable{
 	 * @author David Baselga
 	 * @since 0.1
 	 */
-	private void addCounters(int i) {
+	private void addCounters(float i) {
 		this.aux_counters += i;
 	}
 
@@ -283,11 +283,11 @@ public class Cell implements Digestable{
 			oss.append("###");
 		}else if(this.temp_counters>20) {
 			if(this.temp_counters < 50) oss.append("   ");
-			else if(this.temp_counters < 100) oss.append(" "+this.temp_counters);
-			else if(this.temp_counters < 1000) oss.append(this.temp_counters);
-			else if(this.temp_counters < 10000) oss.append(" "+this.temp_counters/1000+"k");
-			else if(this.temp_counters < 100000) oss.append(this.temp_counters/1000+"k");
-			else if(this.temp_counters < 1000000) oss.append("."+this.temp_counters/100000+"M");
+			else if(this.temp_counters < 100) oss.append(" "+(int) this.temp_counters);
+			else if(this.temp_counters < 1000) oss.append((int) this.temp_counters);
+			else if(this.temp_counters < 10000) oss.append(" "+(int) this.temp_counters/1000+"k");
+			else if(this.temp_counters < 100000) oss.append((int) this.temp_counters/1000+"k");
+			else if(this.temp_counters < 1000000) oss.append("."+(int) this.temp_counters/100000+"M");
 			else oss.append("***");
 		}else if(this.ignition>0) {
 			oss.append(INFLAMMABLE);
