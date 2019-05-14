@@ -19,6 +19,9 @@ public class FixedTempCell extends Cell {
 	
 	/**
 	 * 
+	 * Builds an empty Cell with a fixed temperature.
+	 * 
+	 * @param fixedTemp temperature in which the cell will be fixed
 	 */
 	public FixedTempCell(int fixedTemp) {
 		super();
@@ -32,17 +35,26 @@ public class FixedTempCell extends Cell {
 		fixedTemp = intValue3;
 	}*/
 	
+	/**
+	 * Does nothing.
+	 */
 	@Override
 	public void spread() {
 		return;
 	}
 	
+	/**
+	 * Sets the cell temperature into the fixed temperature defined on it's construction.
+	 */
 	@Override
 	public void commitStatus() {
 		temp_counters = fixedTemp;
 		return;
 	}
 	
+	/**
+	 * Does nothing.
+	 */
 	public void checkFlashpoint() {
 		return;
 	}
