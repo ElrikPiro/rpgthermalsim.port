@@ -168,8 +168,8 @@ public class BuildingTest {
 		ps.println("exit");
 		b.loop();
 		
-		assertTrue(b.buildingLayout.get("a").getCellXY(4, 4).temp_counters > 0 &&
-				b.buildingLayout.get("a").getCellXY(0, 0).temp_counters == b.buildingLayout.get("a").getCellXY(9, 9).temp_counters);
+		assertTrue((int) b.buildingLayout.get("a").getCellXY(4, 4).temp_counters > 0 &&
+				(int) b.buildingLayout.get("a").getCellXY(0, 0).temp_counters == (int) b.buildingLayout.get("a").getCellXY(9, 9).temp_counters);
 	}
 	
 	@Test

@@ -170,7 +170,7 @@ public class Cell implements Digestable{
 	public void spread() {
 		//if(!isSpreadable()) return;
 		float accumulate = temp_counters;
-		int avg = 0;
+		float avg = 0;
 		float flanders = 1.0f;
 		Iterator<Cell> it = this.neightbours.iterator();
 		while(it.hasNext()) {
@@ -179,7 +179,7 @@ public class Cell implements Digestable{
 			flanders+=c.insulation*this.insulation;
 		}
 		
-		avg = (int) (accumulate/flanders);
+		avg = (accumulate/flanders);
 		addCounters(avg-temp_counters);
 	}
 
