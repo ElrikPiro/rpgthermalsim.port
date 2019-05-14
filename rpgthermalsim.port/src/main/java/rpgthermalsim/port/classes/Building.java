@@ -624,6 +624,13 @@ public class Building implements Digestable{
 		buildingLayout.put(iD, r);
 	}
 
+	/**
+	 * Iterates n times, having the cells from every room calculate it's statuses.
+	 * 
+	 * @param n number of iterations executed.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void iterate(int parseInt) {
 		Set<String> lay = buildingLayout.keySet();
 		Iterator<String> it;
@@ -637,10 +644,22 @@ public class Building implements Digestable{
 		}
 	}
 
+	/**
+	 * Equivalent to {@link #iterate(int)}
+	 * 
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void iterate() {
 		iterate(1);
 	}
 
+	/**
+	 * Runs an input loop that executes {@link #command()} until it returns an exit code.
+	 * 
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	public void loop() {
 		refresh(ref);
 		int h = 0;
@@ -650,6 +669,13 @@ public class Building implements Digestable{
 			
 	}
 
+	/**
+	 * Prompts an input line from System.in, passes it to {@link #_command(String)} and handles thrown exceptions.
+	 * 
+	 * @author David Baselga
+	 * @since 0.1
+	 * @return 0 if it must continue operating, -1 if it reaches an exit condition.
+	 */
 	private int command() {
 		String input;
 		System.out.print("command> ");
@@ -668,6 +694,12 @@ public class Building implements Digestable{
 		return 0;
 	}
 
+	/**
+	 * Prints the command help on stdout
+	 * 
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void help() {
 		System.out.println(
 				"\trefresh [roomID [roomID [(...)}]] -         cleans the screen and shows all created rooms, "+
@@ -721,6 +753,13 @@ public class Building implements Digestable{
 		
 	}
 
+	/**
+	 * Renders the list of rooms passed by parameter.
+	 * 
+	 * @param ref2 {@link Layout} containing the set of rooms to render.
+	 * @author David Baselga
+	 * @since 0.1
+	 */
 	private void refresh(Layout ref2) {
 		System.out.print(CLEAR);
 		System.out.println("Iteration: "+this.iteration);
@@ -732,6 +771,10 @@ public class Building implements Digestable{
 		
 	}
 
+	/**
+	 * @author David Baselga
+	 * @since 1.1
+	 */
 	@Override
 	public String digest() throws NoSuchAlgorithmException {
 		StringBuilder oss = new StringBuilder();
