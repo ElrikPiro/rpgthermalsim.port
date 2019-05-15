@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import rpgthermalsim.port.exceptions.BuildingException;
 import rpgthermalsim.port.exceptions.RoomException;
@@ -24,11 +26,13 @@ public class Building implements Digestable{
 	final public static char CLEAR[] = {0x1b,'[','2','J','\0'};
 	public int iteration = 0;
 	
-	protected Layout buildingLayout;
-	protected Layout ref;
-	protected ArrayList<String> builds,puts,links;
+	protected Layout buildingLayout = new Layout();
+	protected Layout ref = new Layout();
+	protected ArrayList<String> builds = new ArrayList<String>();;
+	protected ArrayList<String> puts = new ArrayList<String>();
+	protected ArrayList<String> links = new ArrayList<String>();
 	protected String file;
-	private Scanner teclado;
+	private Scanner teclado = new Scanner(System.in);
 	
 	/**
 	 * Default Class constructor
@@ -37,13 +41,7 @@ public class Building implements Digestable{
 	 * @since 0.1
 	 */
 	public Building() {
-		ref = new Layout();
-		buildingLayout = new Layout();
-		builds = new ArrayList<String>();
-		puts = new ArrayList<String>();
-		links = new ArrayList<String>();
-		file = "";
-		teclado = new Scanner(System.in);
+		file = null;
 	}
 	
 	/**
@@ -55,13 +53,7 @@ public class Building implements Digestable{
 	 * @since 0.1
 	 */
 	public Building(String string) {
-		ref = new Layout();
-		buildingLayout = new Layout();
-		builds = new ArrayList<String>();
-		puts = new ArrayList<String>();
-		links = new ArrayList<String>();
-		file = "";int iterations = 0;
-		teclado = new Scanner(System.in);
+		int iterations = 0;
 		String line = null;
 		
 		try (BufferedReader bf = 
@@ -81,10 +73,10 @@ public class Building implements Digestable{
 			System.exit(-1);
 		} catch (BuildingException e) {
 			e.printStackTrace();
-			System.err.printf("Failed to interpret line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
+			Logger.getGlobal().log(Level.WARNING, "Failed to interpret line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
 		} catch (RoomException e) {
 			e.printStackTrace();
-			System.err.printf("Room exception at line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
+			Logger.getGlobal().log(Level.SEVERE,"Room exception at line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
 		}
 		
 		return;
@@ -105,9 +97,7 @@ public class Building implements Digestable{
 		String ID;
 		int w,h;
 		int x,y;
-		Integer flame = new Integer(0);
-		Integer ignition = new Integer(0);
-		Integer temperature  = new Integer(0);
+		int ignition = 0;
 		Iterator<Cell> it;
 		Cell c;
 		float istn = 0;
@@ -278,7 +268,7 @@ public class Building implements Digestable{
 				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
 				if(x < 0 || y < 0) BuildingException.putError(3,null);
 				
-				ignition = new Integer(Integer.parseInt(args[4]));
+				ignition = Integer.parseInt(args[4]);
 				if(ignition < 0) throw new BuildingException("ignition value must be zero or positive numbers.");
 				
 				if(args.length>5) {
@@ -287,7 +277,7 @@ public class Building implements Digestable{
 					block(ID,x,y,istn);
 				}
 				
-				setCell(ID,x,y,0,ignition.intValue(),0);
+				setCell(ID,x,y,0,ignition,0);
 				puts.add(line);
 				return;
 			case "clear":
@@ -404,11 +394,11 @@ public class Building implements Digestable{
 			} catch (BuildingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				System.err.println("Failed to interpret line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
+				Logger.getGlobal().log(Level.WARNING,"Failed to interpret line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
 				bf.close();
 				return;
 			} catch (RoomException e) {
-				System.err.println("Room exception at line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
+				Logger.getGlobal().log(Level.SEVERE,"Room exception at line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
 				e.printStackTrace();
 			}
 			iterations++;

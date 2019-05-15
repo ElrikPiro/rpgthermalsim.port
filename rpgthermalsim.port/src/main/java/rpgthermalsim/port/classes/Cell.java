@@ -60,6 +60,7 @@ public class Cell implements Digestable{
 	 * @author David Baselga
 	 * @since 0.1
 	 */
+	@Deprecated
 	public Cell(String string) throws CellException {
 		neightbours = new HashSet<Cell>();
 		String[] aux = string.split(",");
@@ -168,7 +169,6 @@ public class Cell implements Digestable{
 	 * @since 0.1
 	 */
 	public void spread() {
-		//if(!isSpreadable()) return;
 		float accumulate = temp_counters;
 		float avg = 0;
 		float flanders = 1.0f;
@@ -201,7 +201,6 @@ public class Cell implements Digestable{
 	 * @since 0.1
 	 */
 	public void commitStatus() {
-		//if(aux_counters==0 && this.temp_counters>0) aux_counters--;
 		this.temp_counters += aux_counters;
 		this.aux_counters = 0;
 	}
@@ -219,7 +218,8 @@ public class Cell implements Digestable{
 			this.ignition *= -10;
 		}
 		else if(this.ignition <= -1){
-			if(++this.ignition==0) {
+			this.ignition++;
+			if(this.ignition==0) {
 				this.flame = 0;
 				this.setReachable();
 			}
@@ -235,32 +235,9 @@ public class Cell implements Digestable{
 	 * @since 0.1
 	 * @deprecated
 	 */
+	@Deprecated
 	public void dissipateHeat() {
-		/*
-		int flanders = 0;
-		int count = 0;
-		
-		Iterator<Cell> it = this.neightbours.iterator();
-		while(it.hasNext()) {
-			Cell c = it.next();
-			if(c.isSpreadable()) flanders++;
-		}
-		
-		if(this.flame <= 0 && this.temp_counters >= 10) this.temp_counters -= this.temp_counters/10;
-		
-		it = this.neightbours.iterator();
-		while(it.hasNext()) {
-			Cell c = it.next();
-			if(this.temp_counters<=0) break;
-			if(c.isSpreadable() && c.temp_counters == 0) {
-				++count;
-				if(count>=flanders/2) {
-					this.temp_counters--;
-					break;
-				}
-			}
-		}
-		*/
+		return;
 	}
 	
 	public String toString() {

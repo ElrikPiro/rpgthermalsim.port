@@ -188,11 +188,6 @@ public class CellTest {
 				&& underTest.temp_counters == 400
 				);
 	}
-
-	@Ignore
-	public final void testDissipateHeat() {
-		return; //TODO: Esta opción dejará de ser usada en pos de un sistema de disipación posterior
-	}
 	
 	@Test
 	public final void testToString() {
@@ -227,11 +222,6 @@ public class CellTest {
 		stringBuilder.append("]");
 		assertTrue(underTest.toString().contains("   "));
 		
-	}
-
-	@Ignore
-	public final void testAddNeightbour() {
-		return;
 	}
 
 }
