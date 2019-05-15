@@ -63,16 +63,15 @@ public class Building implements Digestable{
 		file = "";int iterations = 0;
 		teclado = new Scanner(System.in);
 		String line = null;
-		try {
-			FileReader readfile = new FileReader(string);
-			BufferedReader bf = new BufferedReader(readfile);
+		
+		try (BufferedReader bf = 
+				new BufferedReader(new FileReader(string))  ) {
 			while(bf.ready()) {
 				line = bf.readLine();
 				if(line.length()==0) line = "#";
 				_command(line);
 				iterations++;
 			}
-			bf.close();
 			this.file = string;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

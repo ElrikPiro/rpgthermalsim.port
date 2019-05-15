@@ -51,7 +51,7 @@ public class BuildingTest {
 	}
 	
 	@Test
-	public final void testBuilding() {
+	public final void testBuilding() throws NoSuchAlgorithmException {
 		ps.println("help");
 		
 		ps.println("build A 5 5 room A");
@@ -67,6 +67,9 @@ public class BuildingTest {
 		ps.println("put B 0 2 3");
 		
 		ps.println("save test.txt");
+		ps.println("exit");
+		b.loop();
+		
 		ps.println("save");
 		
 		ps.println();
@@ -95,6 +98,7 @@ public class BuildingTest {
 		b = null;
 		System.gc();
 		b = new Building("test.txt");
+		assertNotNull(b);
 	}
 	
 	@Test
@@ -109,6 +113,7 @@ public class BuildingTest {
 		ps.println("load test.txt");
 		ps.println("exit");
 		b.loop();
+		assertTrue(b.builds.size()==0);
 	}
 	
 	@Test
@@ -124,6 +129,7 @@ public class BuildingTest {
 		b = null;
 		System.setIn(aux);
 		b = new Building("test.txt");
+		assertNotNull(b);
 	}
 	
 	@Test
