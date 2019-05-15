@@ -145,7 +145,7 @@ public class Building implements Digestable{
 				String desc;
 				if(args.length<4) throw new BuildingException("Build command requires at least 3 parameters.");
 				ID = args[1];
-				if(this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" already exists.");
+				if(this.buildingLayout.containsKey(ID)) BuildingException.putError(1,ID);
 				w = Integer.parseInt(args[2]);
 				h = Integer.parseInt(args[3]);
 				if(w < 1 || h < 1) throw new BuildingException("witdh and height must be non-zero positive numbers.");
@@ -168,11 +168,11 @@ public class Building implements Digestable{
 				if(args.length<4) throw new BuildingException("set command requires at least 3 parameters.");
 				
 				ID = args[1];
-				if(!this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" does not exist.");
+				if(!this.buildingLayout.containsKey(ID)) BuildingException.putError(2, ID);
 				
 				w = Integer.parseInt(args[2]);
 				h = Integer.parseInt(args[3]);
-				if(w < 0 || h < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				if(w < 0 || h < 0) BuildingException.putError(3,null);
 				
 				for(int i = 4;i<args.length;i++) {
 					if(i>6) break;
@@ -194,14 +194,14 @@ public class Building implements Digestable{
 				
 				ID1 = args[1];
 				ID2 = args[4];
-				if(!this.buildingLayout.containsKey(ID1)) throw new BuildingException("Building "+ID1+" does not exist.");
-				if(!this.buildingLayout.containsKey(ID2)) throw new BuildingException("Building "+ID2+" does not exist.");
+				if(!this.buildingLayout.containsKey(ID1)) BuildingException.putError(2, ID1);
+				if(!this.buildingLayout.containsKey(ID2)) BuildingException.putError(2, ID2);
 				
 				w1 = Integer.parseInt(args[2]);
 				h1 = Integer.parseInt(args[3]);
 				w2 = Integer.parseInt(args[5]);
 				h2 = Integer.parseInt(args[6]);
-				if(w1 < 0 || h1 < 0 || w2 < 0 || h2 < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				if(w1 < 0 || h1 < 0 || w2 < 0 || h2 < 0) BuildingException.putError(3,null);
 				
 				linkCells(ID1,w1,h1,ID2,w2,h2);
 				
@@ -215,10 +215,10 @@ public class Building implements Digestable{
 				if(args.length<4) throw new BuildingException("ignite command requires at least 4 parameters.");
 				
 				ID = args[1];
-				if(!this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" does not exist.");
+				if(!this.buildingLayout.containsKey(ID)) BuildingException.putError(2, ID);
 				
 				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
-				if(x < 0 || y < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				if(x < 0 || y < 0) BuildingException.putError(3,null);
 				
 				ignite(ID,x,y);
 				return;
@@ -228,10 +228,10 @@ public class Building implements Digestable{
 				if(args.length<4) throw new BuildingException("deflagrate command requires at least 4 parameters.");
 				
 				ID = args[1];
-				if(!this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" does not exist.");
+				if(!this.buildingLayout.containsKey(ID)) BuildingException.putError(2, ID);
 				
 				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
-				if(x < 0 || y < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				if(x < 0 || y < 0) BuildingException.putError(3,null);
 				
 				if(args.length>4) {
 					r = Integer.parseInt(args[4]);
@@ -244,10 +244,10 @@ public class Building implements Digestable{
 				if(args.length<4) throw new BuildingException("block command requires at least 4 parameters.");
 				
 				ID = args[1];
-				if(!this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" does not exist.");
+				if(!this.buildingLayout.containsKey(ID)) BuildingException.putError(2, ID);
 				
 				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
-				if(x < 0 || y < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				if(x < 0 || y < 0) BuildingException.putError(3,null);
 				
 				if(args.length>4) {
 					istn = Float.parseFloat(args[4]);
@@ -261,10 +261,10 @@ public class Building implements Digestable{
 				if(args.length<4) throw new BuildingException("unblock command requires at least 4 parameters.");
 				
 				ID = args[1];
-				if(!this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" does not exist.");
+				if(!this.buildingLayout.containsKey(ID)) BuildingException.putError(2, ID);
 				
 				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
-				if(x < 0 || y < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				if(x < 0 || y < 0) BuildingException.putError(3,null);
 				
 				unblock(ID,x,y);
 				puts.add(line);
@@ -273,10 +273,10 @@ public class Building implements Digestable{
 				if(args.length<5) throw new BuildingException("put command requires at least 4 parameters.");
 				
 				ID = args[1];
-				if(!this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" does not exist.");
+				if(!this.buildingLayout.containsKey(ID)) BuildingException.putError(2, ID);
 				
 				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
-				if(x < 0 || y < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				if(x < 0 || y < 0) BuildingException.putError(3,null);
 				
 				ignition = new Integer(Integer.parseInt(args[4]));
 				if(ignition < 0) throw new BuildingException("ignition value must be zero or positive numbers.");
@@ -294,10 +294,10 @@ public class Building implements Digestable{
 				if(args.length<4) throw new BuildingException("clear command requires at least 4 parameters.");
 				
 				ID = args[1];
-				if(!this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" does not exist.");
+				if(!this.buildingLayout.containsKey(ID)) BuildingException.putError(2, ID);
 				
 				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
-				if(x < 0 || y < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				if(x < 0 || y < 0) BuildingException.putError(3,null);
 				
 				setCell(ID,x,y,0,0,0);
 				puts.add(line);
@@ -317,10 +317,10 @@ public class Building implements Digestable{
 				if(args.length<5) throw new BuildingException("sink command requires at least 5 parameters.");
 				
 				ID = args[1];
-				if(!this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" does not exist.");
+				if(!this.buildingLayout.containsKey(ID)) BuildingException.putError(2, ID);
 				
 				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
-				if(x < 0 || y < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				if(x < 0 || y < 0) BuildingException.putError(3,null);
 				
 				c = new FixedTempCell(Integer.parseInt(args[4]));
 				this.buildingLayout.get(ID).layout.add(c);
@@ -332,10 +332,10 @@ public class Building implements Digestable{
 				if(args.length<4) throw new BuildingException("unsink command requires at least 4 parameters.");
 				
 				ID = args[1];
-				if(!this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" does not exist.");
+				if(!this.buildingLayout.containsKey(ID)) BuildingException.putError(2, ID);
 				
 				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
-				if(x < 0 || y < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				if(x < 0 || y < 0) BuildingException.putError(3,null);
 				
 				it = this.buildingLayout.get(ID).getCellXY(x, y).getNeightbourhood().iterator();
 				
