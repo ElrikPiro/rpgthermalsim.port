@@ -23,8 +23,8 @@ import java.security.NoSuchAlgorithmException;
  */
 public class Building implements Digestable{
 	
-	final public static char CLEAR[] = {0x1b,'[','2','J','\0'};
-	public int iteration = 0;
+	final protected static char CLEAR[] = {0x1b,'[','2','J','\0'};
+	protected int iteration = 0;
 	
 	protected Layout buildingLayout = new Layout();
 	protected Layout ref = new Layout();
@@ -66,16 +66,16 @@ public class Building implements Digestable{
 			}
 			this.file = string;
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			Logger.getGlobal().log(Level.SEVERE, e.getStackTrace().toString());
 			System.exit(-1);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logger.getGlobal().log(Level.SEVERE, e.getStackTrace().toString());
 			System.exit(-1);
 		} catch (BuildingException e) {
-			e.printStackTrace();
+			Logger.getGlobal().log(Level.FINER, e.getStackTrace().toString());
 			Logger.getGlobal().log(Level.WARNING, "Failed to interpret line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
 		} catch (RoomException e) {
-			e.printStackTrace();
+			Logger.getGlobal().log(Level.FINER, e.getStackTrace().toString());
 			Logger.getGlobal().log(Level.SEVERE,"Room exception at line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
 		}
 		
@@ -393,13 +393,13 @@ public class Building implements Digestable{
 				_command(line);
 			} catch (BuildingException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Logger.getGlobal().log(Level.FINER, e.getStackTrace().toString());
 				Logger.getGlobal().log(Level.WARNING,"Failed to interpret line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
 				bf.close();
 				return;
 			} catch (RoomException e) {
+				Logger.getGlobal().log(Level.FINER, e.getStackTrace().toString());
 				Logger.getGlobal().log(Level.SEVERE,"Room exception at line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
-				e.printStackTrace();
 			}
 			iterations++;
 		}
@@ -672,13 +672,13 @@ public class Building implements Digestable{
 		try {
 			_command(input);
 		} catch (BuildingException e) {
-			e.printStackTrace();
+			Logger.getGlobal().log(Level.WARNING, e.getStackTrace().toString());
 			help();
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logger.getGlobal().log(Level.FINER, e.getStackTrace().toString());
 			return -1;
 		} catch (RoomException e) {
-			e.printStackTrace();
+			Logger.getGlobal().log(Level.WARNING, e.getStackTrace().toString());
 		}
 		return 0;
 	}
