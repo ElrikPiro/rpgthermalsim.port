@@ -1,6 +1,7 @@
 package rpgthermalsim.port.classes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Set;
@@ -66,16 +67,16 @@ public class Building implements Digestable{
 			}
 			this.file = string;
 		} catch (FileNotFoundException e) {
-			Logger.getGlobal().log(Level.SEVERE, e.getStackTrace().toString());
+			Logger.getGlobal().log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
 			System.exit(-1);
 		} catch (IOException e) {
-			Logger.getGlobal().log(Level.SEVERE, e.getStackTrace().toString());
+			Logger.getGlobal().log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
 			System.exit(-1);
 		} catch (BuildingException e) {
-			Logger.getGlobal().log(Level.FINER, e.getStackTrace().toString());
+			Logger.getGlobal().log(Level.FINER, Arrays.toString(e.getStackTrace()));
 			Logger.getGlobal().log(Level.WARNING, "Failed to interpret line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
 		} catch (RoomException e) {
-			Logger.getGlobal().log(Level.FINER, e.getStackTrace().toString());
+			Logger.getGlobal().log(Level.FINER, Arrays.toString(e.getStackTrace()));
 			Logger.getGlobal().log(Level.SEVERE,"Room exception at line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
 		}
 		
@@ -393,12 +394,12 @@ public class Building implements Digestable{
 				_command(line);
 			} catch (BuildingException e) {
 				// TODO Auto-generated catch block
-				Logger.getGlobal().log(Level.FINER, e.getStackTrace().toString());
+				Logger.getGlobal().log(Level.FINER, Arrays.toString(e.getStackTrace()));
 				Logger.getGlobal().log(Level.WARNING,"Failed to interpret line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
 				bf.close();
 				return;
 			} catch (RoomException e) {
-				Logger.getGlobal().log(Level.FINER, e.getStackTrace().toString());
+				Logger.getGlobal().log(Level.FINER, Arrays.toString(e.getStackTrace()));
 				Logger.getGlobal().log(Level.SEVERE,"Room exception at line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
 			}
 			iterations++;
@@ -672,13 +673,13 @@ public class Building implements Digestable{
 		try {
 			_command(input);
 		} catch (BuildingException e) {
-			Logger.getGlobal().log(Level.WARNING, e.getStackTrace().toString());
+			Logger.getGlobal().log(Level.WARNING, Arrays.toString(e.getStackTrace()));
 			help();
 		} catch (IOException e) {
-			Logger.getGlobal().log(Level.FINER, e.getStackTrace().toString());
+			Logger.getGlobal().log(Level.FINER, Arrays.toString(e.getStackTrace()));
 			return -1;
 		} catch (RoomException e) {
-			Logger.getGlobal().log(Level.WARNING, e.getStackTrace().toString());
+			Logger.getGlobal().log(Level.WARNING, Arrays.toString(e.getStackTrace()));
 		}
 		return 0;
 	}
