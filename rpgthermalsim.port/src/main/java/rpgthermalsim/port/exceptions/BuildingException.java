@@ -15,8 +15,13 @@ public class BuildingException extends Exception {
 			break;
 		case 2:
 			message = "Building "+premsg+" does not exists";
+			break;
 		case 3:
 			message = "pos x and y must be zero or positive numbers.";
+			break;
+		default:
+			message = premsg;
+			break;
 		}
 		throw new BuildingException(message);
 	}
