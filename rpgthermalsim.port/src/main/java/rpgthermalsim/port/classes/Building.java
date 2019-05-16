@@ -1,9 +1,12 @@
 package rpgthermalsim.port.classes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import rpgthermalsim.port.exceptions.BuildingException;
 import rpgthermalsim.port.exceptions.RoomException;
@@ -21,14 +24,16 @@ import java.security.NoSuchAlgorithmException;
  */
 public class Building implements Digestable{
 	
-	final public static char CLEAR[] = {0x1b,'[','2','J','\0'};
-	public int iteration = 0;
+	final protected static char CLEAR[] = {0x1b,'[','2','J','\0'};
+	protected int iteration = 0;
 	
-	protected Layout buildingLayout;
-	protected Layout ref;
-	protected ArrayList<String> builds,puts,links;
+	protected Layout buildingLayout = new Layout();
+	protected Layout ref = new Layout();
+	protected ArrayList<String> builds = new ArrayList<String>();;
+	protected ArrayList<String> puts = new ArrayList<String>();
+	protected ArrayList<String> links = new ArrayList<String>();
 	protected String file;
-	private Scanner teclado;
+	private Scanner teclado = new Scanner(System.in);
 	
 	/**
 	 * Default Class constructor
@@ -37,13 +42,7 @@ public class Building implements Digestable{
 	 * @since 0.1
 	 */
 	public Building() {
-		ref = new Layout();
-		buildingLayout = new Layout();
-		builds = new ArrayList<String>();
-		puts = new ArrayList<String>();
-		links = new ArrayList<String>();
-		file = "";
-		teclado = new Scanner(System.in);
+		file = null;
 	}
 	
 	/**
@@ -55,37 +54,30 @@ public class Building implements Digestable{
 	 * @since 0.1
 	 */
 	public Building(String string) {
-		ref = new Layout();
-		buildingLayout = new Layout();
-		builds = new ArrayList<String>();
-		puts = new ArrayList<String>();
-		links = new ArrayList<String>();
-		file = "";int iterations = 0;
-		teclado = new Scanner(System.in);
+		int iterations = 0;
 		String line = null;
-		try {
-			FileReader readfile = new FileReader(string);
-			BufferedReader bf = new BufferedReader(readfile);
+		
+		try (BufferedReader bf = 
+				new BufferedReader(new FileReader(string))  ) {
 			while(bf.ready()) {
 				line = bf.readLine();
 				if(line.length()==0) line = "#";
 				_command(line);
 				iterations++;
 			}
-			bf.close();
 			this.file = string;
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			Logger.getGlobal().log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
 			System.exit(-1);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logger.getGlobal().log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
 			System.exit(-1);
 		} catch (BuildingException e) {
-			e.printStackTrace();
-			System.err.printf("Failed to interpret line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
+			Logger.getGlobal().log(Level.FINER, Arrays.toString(e.getStackTrace()));
+			Logger.getGlobal().log(Level.WARNING, "Failed to interpret line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
 		} catch (RoomException e) {
-			e.printStackTrace();
-			System.err.printf("Room exception at line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
+			Logger.getGlobal().log(Level.FINER, Arrays.toString(e.getStackTrace()));
+			Logger.getGlobal().log(Level.SEVERE,"Room exception at line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
 		}
 		
 		return;
@@ -106,9 +98,7 @@ public class Building implements Digestable{
 		String ID;
 		int w,h;
 		int x,y;
-		Integer flame = new Integer(0);
-		Integer ignition = new Integer(0);
-		Integer temperature  = new Integer(0);
+		int ignition = 0;
 		Iterator<Cell> it;
 		Cell c;
 		float istn = 0;
@@ -146,7 +136,7 @@ public class Building implements Digestable{
 				String desc;
 				if(args.length<4) throw new BuildingException("Build command requires at least 3 parameters.");
 				ID = args[1];
-				if(this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" already exists.");
+				if(this.buildingLayout.containsKey(ID)) BuildingException.putError(1,ID);
 				w = Integer.parseInt(args[2]);
 				h = Integer.parseInt(args[3]);
 				if(w < 1 || h < 1) throw new BuildingException("witdh and height must be non-zero positive numbers.");
@@ -169,11 +159,11 @@ public class Building implements Digestable{
 				if(args.length<4) throw new BuildingException("set command requires at least 3 parameters.");
 				
 				ID = args[1];
-				if(!this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" does not exist.");
+				if(!this.buildingLayout.containsKey(ID)) BuildingException.putError(2, ID);
 				
 				w = Integer.parseInt(args[2]);
 				h = Integer.parseInt(args[3]);
-				if(w < 0 || h < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				if(w < 0 || h < 0) BuildingException.putError(3,null);
 				
 				for(int i = 4;i<args.length;i++) {
 					if(i>6) break;
@@ -195,14 +185,14 @@ public class Building implements Digestable{
 				
 				ID1 = args[1];
 				ID2 = args[4];
-				if(!this.buildingLayout.containsKey(ID1)) throw new BuildingException("Building "+ID1+" does not exist.");
-				if(!this.buildingLayout.containsKey(ID2)) throw new BuildingException("Building "+ID2+" does not exist.");
+				if(!this.buildingLayout.containsKey(ID1)) BuildingException.putError(2, ID1);
+				if(!this.buildingLayout.containsKey(ID2)) BuildingException.putError(2, ID2);
 				
 				w1 = Integer.parseInt(args[2]);
 				h1 = Integer.parseInt(args[3]);
 				w2 = Integer.parseInt(args[5]);
 				h2 = Integer.parseInt(args[6]);
-				if(w1 < 0 || h1 < 0 || w2 < 0 || h2 < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				if(w1 < 0 || h1 < 0 || w2 < 0 || h2 < 0) BuildingException.putError(3,null);
 				
 				linkCells(ID1,w1,h1,ID2,w2,h2);
 				
@@ -216,10 +206,10 @@ public class Building implements Digestable{
 				if(args.length<4) throw new BuildingException("ignite command requires at least 4 parameters.");
 				
 				ID = args[1];
-				if(!this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" does not exist.");
+				if(!this.buildingLayout.containsKey(ID)) BuildingException.putError(2, ID);
 				
 				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
-				if(x < 0 || y < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				if(x < 0 || y < 0) BuildingException.putError(3,null);
 				
 				ignite(ID,x,y);
 				return;
@@ -229,10 +219,10 @@ public class Building implements Digestable{
 				if(args.length<4) throw new BuildingException("deflagrate command requires at least 4 parameters.");
 				
 				ID = args[1];
-				if(!this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" does not exist.");
+				if(!this.buildingLayout.containsKey(ID)) BuildingException.putError(2, ID);
 				
 				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
-				if(x < 0 || y < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				if(x < 0 || y < 0) BuildingException.putError(3,null);
 				
 				if(args.length>4) {
 					r = Integer.parseInt(args[4]);
@@ -245,10 +235,10 @@ public class Building implements Digestable{
 				if(args.length<4) throw new BuildingException("block command requires at least 4 parameters.");
 				
 				ID = args[1];
-				if(!this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" does not exist.");
+				if(!this.buildingLayout.containsKey(ID)) BuildingException.putError(2, ID);
 				
 				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
-				if(x < 0 || y < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				if(x < 0 || y < 0) BuildingException.putError(3,null);
 				
 				if(args.length>4) {
 					istn = Float.parseFloat(args[4]);
@@ -262,10 +252,10 @@ public class Building implements Digestable{
 				if(args.length<4) throw new BuildingException("unblock command requires at least 4 parameters.");
 				
 				ID = args[1];
-				if(!this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" does not exist.");
+				if(!this.buildingLayout.containsKey(ID)) BuildingException.putError(2, ID);
 				
 				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
-				if(x < 0 || y < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				if(x < 0 || y < 0) BuildingException.putError(3,null);
 				
 				unblock(ID,x,y);
 				puts.add(line);
@@ -274,12 +264,12 @@ public class Building implements Digestable{
 				if(args.length<5) throw new BuildingException("put command requires at least 4 parameters.");
 				
 				ID = args[1];
-				if(!this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" does not exist.");
+				if(!this.buildingLayout.containsKey(ID)) BuildingException.putError(2, ID);
 				
 				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
-				if(x < 0 || y < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				if(x < 0 || y < 0) BuildingException.putError(3,null);
 				
-				ignition = new Integer(Integer.parseInt(args[4]));
+				ignition = Integer.parseInt(args[4]);
 				if(ignition < 0) throw new BuildingException("ignition value must be zero or positive numbers.");
 				
 				if(args.length>5) {
@@ -288,17 +278,17 @@ public class Building implements Digestable{
 					block(ID,x,y,istn);
 				}
 				
-				setCell(ID,x,y,0,ignition.intValue(),0);
+				setCell(ID,x,y,0,ignition,0);
 				puts.add(line);
 				return;
 			case "clear":
 				if(args.length<4) throw new BuildingException("clear command requires at least 4 parameters.");
 				
 				ID = args[1];
-				if(!this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" does not exist.");
+				if(!this.buildingLayout.containsKey(ID)) BuildingException.putError(2, ID);
 				
 				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
-				if(x < 0 || y < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				if(x < 0 || y < 0) BuildingException.putError(3,null);
 				
 				setCell(ID,x,y,0,0,0);
 				puts.add(line);
@@ -318,10 +308,10 @@ public class Building implements Digestable{
 				if(args.length<5) throw new BuildingException("sink command requires at least 5 parameters.");
 				
 				ID = args[1];
-				if(!this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" does not exist.");
+				if(!this.buildingLayout.containsKey(ID)) BuildingException.putError(2, ID);
 				
 				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
-				if(x < 0 || y < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				if(x < 0 || y < 0) BuildingException.putError(3,null);
 				
 				c = new FixedTempCell(Integer.parseInt(args[4]));
 				this.buildingLayout.get(ID).layout.add(c);
@@ -333,10 +323,10 @@ public class Building implements Digestable{
 				if(args.length<4) throw new BuildingException("unsink command requires at least 4 parameters.");
 				
 				ID = args[1];
-				if(!this.buildingLayout.containsKey(ID)) throw new BuildingException("Building "+ID+" does not exist.");
+				if(!this.buildingLayout.containsKey(ID)) BuildingException.putError(2, ID);
 				
 				x = Integer.parseInt(args[2]); y = Integer.parseInt(args[3]);
-				if(x < 0 || y < 0) throw new BuildingException("pos x and y must be zero or positive numbers.");
+				if(x < 0 || y < 0) BuildingException.putError(3,null);
 				
 				it = this.buildingLayout.get(ID).getCellXY(x, y).getNeightbourhood().iterator();
 				
@@ -404,13 +394,13 @@ public class Building implements Digestable{
 				_command(line);
 			} catch (BuildingException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
-				System.err.println("Failed to interpret line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
+				Logger.getGlobal().log(Level.FINER, Arrays.toString(e.getStackTrace()));
+				Logger.getGlobal().log(Level.WARNING,"Failed to interpret line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
 				bf.close();
 				return;
 			} catch (RoomException e) {
-				System.err.println("Room exception at line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
-				e.printStackTrace();
+				Logger.getGlobal().log(Level.FINER, Arrays.toString(e.getStackTrace()));
+				Logger.getGlobal().log(Level.SEVERE,"Room exception at line: "+System.lineSeparator()+iterations+": "+line+System.lineSeparator());
 			}
 			iterations++;
 		}
@@ -683,13 +673,13 @@ public class Building implements Digestable{
 		try {
 			_command(input);
 		} catch (BuildingException e) {
-			e.printStackTrace();
+			Logger.getGlobal().log(Level.WARNING, Arrays.toString(e.getStackTrace()));
 			help();
 		} catch (IOException e) {
-			e.printStackTrace();
+			Logger.getGlobal().log(Level.FINER, Arrays.toString(e.getStackTrace()));
 			return -1;
 		} catch (RoomException e) {
-			e.printStackTrace();
+			Logger.getGlobal().log(Level.WARNING, Arrays.toString(e.getStackTrace()));
 		}
 		return 0;
 	}

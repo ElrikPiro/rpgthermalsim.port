@@ -29,12 +29,6 @@ public class FixedTempCell extends Cell {
 		this.temp_counters = fixedTemp;
 	}
 	
-	/*@Override
-	public void setStatus(int intValue, int intValue2, int intValue3) {
-		temp_counters = intValue3;
-		fixedTemp = intValue3;
-	}*/
-	
 	/**
 	 * Does nothing.
 	 */
@@ -55,6 +49,7 @@ public class FixedTempCell extends Cell {
 	/**
 	 * Does nothing.
 	 */
+	@Override
 	public void checkFlashpoint() {
 		return;
 	}
