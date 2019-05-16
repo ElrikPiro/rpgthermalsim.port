@@ -60,6 +60,7 @@ public class Cell implements Digestable{
 	 * @author David Baselga
 	 * @since 0.1
 	 */
+	@Deprecated
 	public Cell(String string) throws CellException {
 		neightbours = new HashSet<Cell>();
 		String[] aux = string.split(",");
@@ -168,7 +169,6 @@ public class Cell implements Digestable{
 	 * @since 0.1
 	 */
 	public void spread() {
-		//if(!isSpreadable()) return;
 		float accumulate = temp_counters;
 		float avg = 0;
 		float flanders = 1.0f;
@@ -201,7 +201,6 @@ public class Cell implements Digestable{
 	 * @since 0.1
 	 */
 	public void commitStatus() {
-		//if(aux_counters==0 && this.temp_counters>0) aux_counters--;
 		this.temp_counters += aux_counters;
 		this.aux_counters = 0;
 	}
@@ -219,13 +218,16 @@ public class Cell implements Digestable{
 			this.ignition *= -10;
 		}
 		else if(this.ignition <= -1){
-			if(++this.ignition==0) {
+			this.ignition++;
+			if(this.ignition==0) {
 				this.flame = 0;
 				this.setReachable();
 			}
 		}
 
-		if(this.flame==1) this.temp_counters += 200;
+		if(this.flame==1 && this.temp_counters < 500) {
+			this.temp_counters = 500;
+		}else if(this.flame==1) this.temp_counters+=100;
 	}
 
 	/**
@@ -235,32 +237,9 @@ public class Cell implements Digestable{
 	 * @since 0.1
 	 * @deprecated
 	 */
+	@Deprecated
 	public void dissipateHeat() {
-		/*
-		int flanders = 0;
-		int count = 0;
-		
-		Iterator<Cell> it = this.neightbours.iterator();
-		while(it.hasNext()) {
-			Cell c = it.next();
-			if(c.isSpreadable()) flanders++;
-		}
-		
-		if(this.flame <= 0 && this.temp_counters >= 10) this.temp_counters -= this.temp_counters/10;
-		
-		it = this.neightbours.iterator();
-		while(it.hasNext()) {
-			Cell c = it.next();
-			if(this.temp_counters<=0) break;
-			if(c.isSpreadable() && c.temp_counters == 0) {
-				++count;
-				if(count>=flanders/2) {
-					this.temp_counters--;
-					break;
-				}
-			}
-		}
-		*/
+		return;
 	}
 	
 	public String toString() {
@@ -281,6 +260,12 @@ public class Cell implements Digestable{
 			oss.append(" * ");
 		}else if(!this.isSpreadable()) {
 			oss.append("###");
+		}else if(this.ignition>0) {
+			oss.append(INFLAMMABLE);
+			if(this.ignition<10) oss.append(" "+this.ignition+" ");
+			else if(this.ignition<100) oss.append(" "+this.ignition);
+			else if(this.ignition<1000) oss.append(this.ignition);
+			else oss.append("^^^");
 		}else if(this.temp_counters>20) {
 			if(this.temp_counters < 50) oss.append("   ");
 			else if(this.temp_counters < 100) oss.append(" "+(int) this.temp_counters);
@@ -289,12 +274,6 @@ public class Cell implements Digestable{
 			else if(this.temp_counters < 100000) oss.append((int) this.temp_counters/1000+"k");
 			else if(this.temp_counters < 1000000) oss.append("."+(int) this.temp_counters/100000+"M");
 			else oss.append("***");
-		}else if(this.ignition>0) {
-			oss.append(INFLAMMABLE);
-			if(this.ignition<10) oss.append(" "+this.ignition+" ");
-			else if(this.ignition<100) oss.append(" "+this.ignition);
-			else if(this.ignition<1000) oss.append(this.ignition);
-			else oss.append("^^^");
 		}else {
 			oss.append("   ");
 		}

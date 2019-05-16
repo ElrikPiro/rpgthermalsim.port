@@ -1,0 +1,1 @@
+mvn sonar:sonar   -Dsonar.projectKey=ElrikPiro_rpgthermalsim.port   -Dsonar.organization=elrikpiro-github   -Dsonar.host.url=https://sonarcloud.io   -Dsonar.login=ade750415e01017d52f3d94e3dc1e6dd15047059

@@ -1,6 +1,9 @@
 
 
 package rpgthermalsim.port.main;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import rpgthermalsim.port.classes.*;
 
 public class Rpgthermalsim {
@@ -18,7 +21,7 @@ public class Rpgthermalsim {
 				build.loop();
 				break;
 			default:
-				System.err.println("usage:"+System.lineSeparator()+".\rpg-thermal-sim [filename]");
+				Logger.getGlobal().log(Level.SEVERE,"usage:"+System.lineSeparator()+".\rpg-thermal-sim [filename]");
 				System.exit(-1);
 				break;
 		}

@@ -185,13 +185,8 @@ public class CellTest {
 		underTest.checkFlashpoint();
 		assertTrue(underTest.flame==1
 				&& underTest.ignition==-10
-				&& underTest.temp_counters == 400
+				&& underTest.temp_counters == 500
 				);
-	}
-
-	@Ignore
-	public final void testDissipateHeat() {
-		return; //TODO: Esta opción dejará de ser usada en pos de un sistema de disipación posterior
 	}
 	
 	@Test
@@ -227,11 +222,6 @@ public class CellTest {
 		stringBuilder.append("]");
 		assertTrue(underTest.toString().contains("   "));
 		
-	}
-
-	@Ignore
-	public final void testAddNeightbour() {
-		return;
 	}
 
 }

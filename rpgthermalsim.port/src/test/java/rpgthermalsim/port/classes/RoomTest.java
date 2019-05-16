@@ -55,11 +55,5 @@ public class RoomTest {
 	public final void testGetCellXY() throws RoomException {
 		assertNotNull(r.getCellXY((int) Math.random()*r.w+1, (int) Math.random()*r.h+1));
 	}
-	
-
-	@Ignore
-	public final void testGetDesc() {
-		fail("No need");
-	}
 
 }
