@@ -225,7 +225,9 @@ public class Cell implements Digestable{
 			}
 		}
 
-		if(this.flame==1) this.temp_counters += 200;
+		if(this.flame==1 && this.temp_counters < 500) {
+			this.temp_counters = 500;
+		}else if(this.flame==1) this.temp_counters+=100;
 	}
 
 	/**

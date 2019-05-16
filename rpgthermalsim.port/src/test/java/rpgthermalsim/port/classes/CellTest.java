@@ -185,7 +185,7 @@ public class CellTest {
 		underTest.checkFlashpoint();
 		assertTrue(underTest.flame==1
 				&& underTest.ignition==-10
-				&& underTest.temp_counters == 400
+				&& underTest.temp_counters == 500
 				);
 	}
 	
