@@ -258,6 +258,12 @@ public class Cell implements Digestable{
 			oss.append(" * ");
 		}else if(!this.isSpreadable()) {
 			oss.append("###");
+		}else if(this.ignition>0) {
+			oss.append(INFLAMMABLE);
+			if(this.ignition<10) oss.append(" "+this.ignition+" ");
+			else if(this.ignition<100) oss.append(" "+this.ignition);
+			else if(this.ignition<1000) oss.append(this.ignition);
+			else oss.append("^^^");
 		}else if(this.temp_counters>20) {
 			if(this.temp_counters < 50) oss.append("   ");
 			else if(this.temp_counters < 100) oss.append(" "+(int) this.temp_counters);
@@ -266,12 +272,6 @@ public class Cell implements Digestable{
 			else if(this.temp_counters < 100000) oss.append((int) this.temp_counters/1000+"k");
 			else if(this.temp_counters < 1000000) oss.append("."+(int) this.temp_counters/100000+"M");
 			else oss.append("***");
-		}else if(this.ignition>0) {
-			oss.append(INFLAMMABLE);
-			if(this.ignition<10) oss.append(" "+this.ignition+" ");
-			else if(this.ignition<100) oss.append(" "+this.ignition);
-			else if(this.ignition<1000) oss.append(this.ignition);
-			else oss.append("^^^");
 		}else {
 			oss.append("   ");
 		}
