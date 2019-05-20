@@ -810,5 +810,24 @@ public class Building implements Digestable{
 		
 		return digest(oss.toString());
 	}
+	
+	/**
+	 * 
+	 * Runs the passed command and returns the render results
+	 * 
+	 * @param line the command to execute
+	 * @returns the render result
+	 */
+	@RequestMapping("/thermalSim")
+	public String RESThandler(@RequestParam(value="command", defaultValue="#") String line) {
+		try {
+			_command(line);
+		} catch (BuildingException | IOException | RoomException e) {
+			Logger.getGlobal().log(Level.FINER, Arrays.toString(e.getStackTrace()));
+			return "ERROR: "+e.getMessage();
+		}
+		
+		return refresh(ref);
+	}
 
 }
