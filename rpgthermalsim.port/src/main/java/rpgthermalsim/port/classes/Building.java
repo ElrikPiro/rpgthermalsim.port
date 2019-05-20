@@ -8,8 +8,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -818,7 +817,7 @@ public class Building implements Digestable{
 	 * @param line the command to execute
 	 * @returns the render result
 	 */
-	@RequestMapping("/thermalSim")
+	@GetMapping("/thermalSim")
 	public String RESThandler(@RequestParam(value="command", defaultValue="#") String line) {
 		try {
 			_command(line);
