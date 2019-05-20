@@ -4,14 +4,21 @@ package rpgthermalsim.port.main;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+
 import rpgthermalsim.port.classes.*;
 
+@SpringBootApplication
+@ComponentScan(basePackages = "rpgthermalsim.port.classes")
 public class Rpgthermalsim {
 
 	public static Building build;
 	
 	public static void main(String[] args) {
-		
+		build = new Building();
+		SpringApplication.run(Rpgthermalsim.class, args);
 		switch(args.length) {
 			case 0:
 				build = new Building();
