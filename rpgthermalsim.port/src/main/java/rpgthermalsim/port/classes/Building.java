@@ -754,17 +754,21 @@ public class Building implements Digestable{
 	 * 
 	 * @param ref2 {@link Layout} containing the set of rooms to render.
 	 * @author David Baselga
+	 * @returns String Render result.
 	 * @since 0.1
 	 */
-	private void refresh(Layout ref2) {
+	private String refresh(Layout ref2) {
 		System.out.print(CLEAR);
-		System.out.println("Iteration: "+this.iteration);
+		StringBuilder oss = new StringBuilder();
+		oss.append("Iteration: "+this.iteration+System.lineSeparator());
 		Iterator<String> keys = ref2.keySet().iterator();
 		while(keys.hasNext()) {
 			String key = keys.next();
-			System.out.print("CODE: <" + key + ">" + System.lineSeparator() + ref2.get(key).toString());
+			oss.append("CODE:<" + key + ">" + System.lineSeparator() + 
+					ref2.get(key).toString() + System.lineSeparator());
 		}
-		
+		System.out.print(oss.toString());
+		return oss.toString();
 	}
 
 	/**
