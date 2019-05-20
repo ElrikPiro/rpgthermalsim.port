@@ -8,6 +8,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import rpgthermalsim.port.exceptions.BuildingException;
 import rpgthermalsim.port.exceptions.RoomException;
 
@@ -22,6 +27,7 @@ import java.security.NoSuchAlgorithmException;
  * @author David Baselga
  * @since 0.1
  */
+@RestController
 public class Building implements Digestable{
 	
 	final protected static char CLEAR[] = {0x1b,'[','2','J','\0'};
@@ -748,17 +754,21 @@ public class Building implements Digestable{
 	 * 
 	 * @param ref2 {@link Layout} containing the set of rooms to render.
 	 * @author David Baselga
+	 * @returns String Render result.
 	 * @since 0.1
 	 */
-	private void refresh(Layout ref2) {
+	private String refresh(Layout ref2) {
 		System.out.print(CLEAR);
-		System.out.println("Iteration: "+this.iteration);
+		StringBuilder oss = new StringBuilder();
+		oss.append("Iteration: "+this.iteration+System.lineSeparator());
 		Iterator<String> keys = ref2.keySet().iterator();
 		while(keys.hasNext()) {
 			String key = keys.next();
-			System.out.print("CODE: <" + key + ">" + System.lineSeparator() + ref2.get(key).toString());
+			oss.append("CODE:<" + key + ">" + System.lineSeparator() + 
+					ref2.get(key).toString() + System.lineSeparator());
 		}
-		
+		System.out.print(oss.toString());
+		return oss.toString();
 	}
 
 	/**
@@ -799,6 +809,25 @@ public class Building implements Digestable{
 		oss.append(file);
 		
 		return digest(oss.toString());
+	}
+	
+	/**
+	 * 
+	 * Runs the passed command and returns the render results
+	 * 
+	 * @param line the command to execute
+	 * @returns the render result
+	 */
+	@RequestMapping("/thermalSim")
+	public String RESThandler(@RequestParam(value="command", defaultValue="#") String line) {
+		try {
+			_command(line);
+		} catch (BuildingException | IOException | RoomException e) {
+			Logger.getGlobal().log(Level.FINER, Arrays.toString(e.getStackTrace()));
+			return "ERROR: "+e.getMessage();
+		}
+		
+		return refresh(ref);
 	}
 
 }
