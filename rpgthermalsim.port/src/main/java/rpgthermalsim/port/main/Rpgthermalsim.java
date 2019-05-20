@@ -8,8 +8,9 @@ import rpgthermalsim.port.classes.*;
 
 public class Rpgthermalsim {
 
+	public static Building build;
+	
 	public static void main(String[] args) {
-		Building build;
 		
 		switch(args.length) {
 			case 0:
