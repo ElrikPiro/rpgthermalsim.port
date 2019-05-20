@@ -8,6 +8,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import rpgthermalsim.port.exceptions.BuildingException;
 import rpgthermalsim.port.exceptions.RoomException;
 
@@ -22,6 +27,7 @@ import java.security.NoSuchAlgorithmException;
  * @author David Baselga
  * @since 0.1
  */
+@RestController
 public class Building implements Digestable{
 	
 	final protected static char CLEAR[] = {0x1b,'[','2','J','\0'};
