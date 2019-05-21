@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.gmail.david.baselga</groupId>
   <artifactId>rpgthermalsim.port</artifactId>
-  <version>0.1</version>
+  <version>1.1</version>
   <name>Java RPG Thermal Sim</name>
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
