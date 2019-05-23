@@ -2,6 +2,9 @@ package rpgthermalsim.port.classes;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collection;
+
+import org.json.JSONObject;
 
 import rpgthermalsim.port.exceptions.CellException;
 import rpgthermalsim.port.exceptions.RoomException;
@@ -143,5 +146,23 @@ public class Room implements Digestable{
 			oss.append(layout.get(i).digest());
 		}
 		return digest(oss.toString());
+	}
+
+	/**
+	 * 
+	 * @return JSON representation of object
+	 */
+	public JSONObject toJSON(String id) {
+		JSONObject json = new JSONObject();
+		json.put("id", id);
+		json.put("desc", desc);
+		json.put("w", w);
+		json.put("h", h);
+		
+		for(int i = 0; i<layout.size();i++) {
+			json.accumulate("cells", layout.get(i).toJSON());
+		}
+		
+		return json;
 	}
 }

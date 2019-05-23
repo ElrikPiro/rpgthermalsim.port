@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.json.JSONObject;
 
 import rpgthermalsim.port.exceptions.CellException;
 
@@ -312,6 +313,24 @@ public class Cell implements Digestable{
 		}
 		oss.append(neightbours.size());
 		return digest(oss.toString());
+	}
+
+	/**
+	 * 
+	 * @return JSON representation of object
+	 */
+	public JSONObject toJSON() {
+		JSONObject json = new JSONObject();
+		
+		json.put("flame", flame);
+		json.put("ignition", ignition);
+		json.put("temp_counters", temp_counters);
+		json.put("spreadable", spreadable);
+		json.put("insulation", insulation);
+		json.put("neightbours", neightbours.size());
+		json.put("type", this.getClass().toString());
+		
+		return json;
 	}
 
 }

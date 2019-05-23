@@ -8,6 +8,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -760,15 +762,22 @@ public class Building implements Digestable{
 	private String refresh(Layout ref2) {
 		System.out.print(CLEAR);
 		StringBuilder oss = new StringBuilder();
+		JSONObject json = new JSONObject();
+		
+		json.put("iteration", this.iteration);
 		oss.append("Iteration: "+this.iteration+System.lineSeparator());
+		
 		Iterator<String> keys = ref2.keySet().iterator();
+		json.put("rooms", new JSONArray());
 		while(keys.hasNext()) {
 			String key = keys.next();
+			json.accumulate("rooms", ref2.get(key).toJSON(key));
 			oss.append("CODE:<" + key + ">" + System.lineSeparator() + 
 					ref2.get(key).toString() + System.lineSeparator());
 		}
+		
 		System.out.print(oss.toString());
-		return oss.toString();
+		return json.toString();
 	}
 
 	/**
