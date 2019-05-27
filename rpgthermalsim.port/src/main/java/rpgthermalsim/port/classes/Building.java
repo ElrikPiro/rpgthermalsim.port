@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -775,7 +776,13 @@ public class Building implements Digestable{
 			oss.append("CODE:<" + key + ">" + System.lineSeparator() + 
 					ref2.get(key).toString() + System.lineSeparator());
 		}
-		
+		try {
+			json.put("digest", this.digest());
+		} catch (JSONException e) {
+			Logger.getGlobal().log(Level.FINE, e.getMessage());
+		} catch (NoSuchAlgorithmException e) {
+			Logger.getGlobal().log(Level.FINE, "Digest algoritm not found.");
+		}
 		System.out.print(oss.toString());
 		return json.toString();
 	}
